@@ -5,8 +5,8 @@
     Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Fade.h"
-#include <iostream>
 #include "Game_Window.h"
 #include "Shader_Manager.h"
 

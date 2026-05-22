@@ -5,13 +5,12 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Billboard.h"
 #include "direct3d.h"
-#include <DirectXMath.h>
 #include "Texture_Manager.h"
 #include "Shader_Manager.h"
-#include <Player_Camera.h>
-#include <wrl/client.h>
+#include "Player_Camera.h"
 #include "Sprite_Animation.h"
 #include "Palette.h"
 using namespace DirectX;

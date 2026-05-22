@@ -8,8 +8,6 @@
 #ifndef PLAYER_CAMERA_H
 #define PLAYER_CAMERA_H
 
-#include <DirectXMath.h>
-
 void Player_Camera_Initialize();
 void Player_Camera_Finalize();
 

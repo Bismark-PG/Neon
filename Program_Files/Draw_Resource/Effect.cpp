@@ -5,12 +5,12 @@
    Author : Choi HyungJoon
 
 ================================================z==============================*/
+#include "Project_Header.h"
 #include "Effect.h"
-#include <DirectXMath.h>
-using namespace DirectX;
 #include "Texture_Manager.h"
 #include "Sprite_Animation.h"
 #include "Game_Texture.h"
+using namespace DirectX;
 
 struct Effect
 {

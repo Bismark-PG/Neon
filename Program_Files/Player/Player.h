@@ -7,7 +7,6 @@
 ==============================================================================*/
 #ifndef PLAYER_H
 #define PLAYER_H
-#include <DirectXMath.h>
 #include "Collision.h"
 
 enum class E_PlayerState

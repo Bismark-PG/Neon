@@ -13,6 +13,7 @@
 // http://go.microsoft.com/fwlink/?LinkID=615561
 //--------------------------------------------------------------------------------------
 #include "mouse.h"
+#include <iostream>
 #include <windowsx.h>
 #include <assert.h>
 #include "Sprite.h"

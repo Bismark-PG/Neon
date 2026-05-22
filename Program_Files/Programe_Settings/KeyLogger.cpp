@@ -7,7 +7,6 @@
 ==============================================================================*/
 #pragma comment(lib, "Xinput.lib")
 #include "KeyLogger.h"
-#include "Game_Screen_Manager.h"
 
 using namespace DirectX;
 
@@ -48,17 +47,6 @@ void KeyLogger_Initialize(HWND window)
 
 void KeyLogger_Update()
 {
-	bool Block_Input = false;
-	Main_Screen Current_State = Game_Manager::GetInstance()->Get_Current_Main_Screen();
-
-	if (Current_State == Main_Screen::M_WAIT || Current_State == Main_Screen::MAIN)
-	{
-		Block_Input = true;
-	}
-
-	if (Block_Input)
-		return;
-
 	// Get XPad State
 	static bool PrevConnected = false;
 	bool IsConnected = false;

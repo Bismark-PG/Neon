@@ -9,7 +9,6 @@
 #define DEBUG_SETTINGS_H
 #include "Collision.h"
 #include "direct3d.h"
-#include <DirectXMath.h>
 
 extern bool Is_Debug_Box_Draw;
 

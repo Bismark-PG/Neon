@@ -5,7 +5,6 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
-#include <random>
 #ifndef RANDOM_LOGIC_H
 #define RANDOM_LOGIC_H
 

@@ -9,9 +9,9 @@
         > Function Type  : Pointer
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Texture_Manager.h"
 #include "direct3d.h"
-#include <windows.h>
 #include "WICTextureLoader11.h"
 using namespace DirectX;
 

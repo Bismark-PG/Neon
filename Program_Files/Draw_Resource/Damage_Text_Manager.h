@@ -9,10 +9,6 @@
 #ifndef DAMAGE_TEXT_MANAGER_H
 #define DAMAGE_TEXT_MANAGER_H
 
-#include <vector>
-#include <DirectXMath.h>
-#include <string>
-
 // Damage Node Structure
 struct Damage_Node
 {

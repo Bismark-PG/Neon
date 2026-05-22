@@ -5,14 +5,13 @@
     Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Damage_Text_Manager.h"
 #include "Texture_Manager.h"
 #include "Billboard.h"
 #include "Player_Camera.h"
 #include "Random_Heapler_Logic.h"
 #include "Shader_Manager.h"
-#include <string>
-#include <cmath>
 
 using namespace DirectX;
 

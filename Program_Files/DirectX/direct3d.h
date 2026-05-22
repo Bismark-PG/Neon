@@ -8,10 +8,6 @@
 #ifndef DIRECT3D_H
 #define DIRECT3D_H
 
-
-#include <Windows.h>
-#include <d3d11.h>
-
 // セーフリリースマクロ
 #define SAFE_RELEASE(o) if (o) { (o)->Release(); o = NULL; }
 

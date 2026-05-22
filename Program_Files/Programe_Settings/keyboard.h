@@ -16,10 +16,8 @@
 #define HAL_YOUHEI_KEYBOARD_H
 #pragma once
 
-
 #include <windows.h>
 #include <memory>
-
 
 // ƒL[—ñ‹“
 typedef enum Keyboard_Keys_tag : unsigned char

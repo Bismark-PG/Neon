@@ -5,14 +5,13 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
-
+#include "Project_Header.h"
 #include "Debug_Camera.h"
 #include "direct3d.h"
-#include <DirectXMath.h>
-using namespace DirectX;
 #include "KeyLogger.h"
 #include "Shader_Manager.h"
 #include "Player_Camera.h"
+using namespace DirectX;
 
 static float Debug_Camera_Yaw = 0.0f;
 static float Debug_Camera_Pitch = 0.0f;

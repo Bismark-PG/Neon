@@ -11,13 +11,6 @@
 #ifndef DEBUG_TEXT_H
 #define DEBUG_TEXT_H
 
-#include <d3d11.h>
-#include <string>
-#include <list>
-#include <wrl/client.h> // Microsoft::WRL::ComPtrを使用する場合は必要
-#include <DirectXMath.h>
-
-
 namespace Text
 {
 	class DebugText

@@ -5,6 +5,7 @@
     Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Light_Manager.h"
 #include "Shader_Manager.h"
 #include "Palette.h"       

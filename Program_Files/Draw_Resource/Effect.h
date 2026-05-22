@@ -8,8 +8,6 @@
 #ifndef EFFECT_H
 #define EFFECT_H
 
-#include <DirectXMath.h>
-
 void Effect_Initialize();
 void Effect_Finalize();
 

@@ -8,12 +8,6 @@
 #ifndef TEXTURE_H
 #define TEXTURE_H
 
-#include <d3d11.h>
-#include <string>
-#include <vector>
-#include <unordered_map>
-#include <wrl/client.h> 
-
 class Texture_Manager
 {
 public:

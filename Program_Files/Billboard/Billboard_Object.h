@@ -7,7 +7,6 @@
 ==============================================================================*/
 #ifndef BILLBOARD_OBJECT_H
 #define BILLBOARD_OBJECT_H
-#include <DirectXMath.h>
 #include "Collision.h"
 #include "Billboard.h"
 

@@ -13,10 +13,10 @@
 --------------------------------------------------------------------------------
 
 ==============================================================================*/
-#include "debug_text.h"
+#include "Project_Header.h"
 using namespace DirectX;
-#include <D3Dcompiler.h>
 using namespace Microsoft::WRL;
+#include "debug_text.h"
 #include "Texture_Manager.h"
 
 namespace Text

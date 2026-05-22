@@ -8,8 +8,6 @@
 #ifndef COLLISION_H
 #define COLLISION_H
 
-#include <DirectXMath.h>
-
 struct Circle
 {
 	DirectX::XMFLOAT2 Center;

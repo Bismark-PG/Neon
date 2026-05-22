@@ -59,7 +59,8 @@ bool Shader_Manager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
     };
     if (!loadVertexShader("Resource/Shader/shader_vertex_Billboard.cso", m_vsBillboard, m_ilBillboard, layoutBillboard, ARRAYSIZE(layoutBillboard))) return false;
     if (!loadPixelShader("Resource/Shader/shader_pixel_Billboard.cso", m_psBillboard)) return false;
-
+    
+    /*
     // --- Initialize Skinning Shaders ---
     // Animation Model Need Bone ID And Weight.
     D3D11_INPUT_ELEMENT_DESC layoutSkinning[] =  
@@ -74,6 +75,7 @@ bool Shader_Manager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
         { "BLENDWEIGHT",  0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
     };
     if (!loadVertexShader("Resource/Shader/shader_vertex_Skinning.cso", m_vsSkinning, m_ilSkinning, layoutSkinning, ARRAYSIZE(layoutSkinning))) return false;
+    */
 
     // --- Create Constant Buffers ---
     D3D11_BUFFER_DESC cbDesc = {};
@@ -183,6 +185,7 @@ bool Shader_Manager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
         return false;
     }
 
+    /*
     // --- Create Bone Constant Buffer ---
     D3D11_BUFFER_DESC boneBufferDesc = {};
     boneBufferDesc.ByteWidth = sizeof(Bone_Buffer); // 256 * 64 bytes
@@ -215,6 +218,7 @@ bool Shader_Manager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
         MessageBox(nullptr, L"Failed to create Cull Back Mode", L"Error", MB_OK);
         return false;
     }
+    */
 
     return true;
 }
@@ -301,8 +305,10 @@ void Shader_Manager::Begin3D(Shader_Filter Filter)
     ID3D11Buffer* vsCbs[] = { m_cbWorld3D.Get(), m_cbView3D.Get(), m_cbProjection3D.Get() };
     m_context->VSSetConstantBuffers(0, 3, vsCbs); // b0, b1, b2
 
+    /*
     // --- Get Shadow Buffer ---
     m_context->VSSetConstantBuffers(3, 1, m_cbShadow.GetAddressOf());
+    */
 
     // --- PS Buffers ---
     ID3D11Buffer* psCbs[] = {
@@ -353,8 +359,10 @@ void Shader_Manager::Begin3D_For_Field(Shader_Filter Filter)
     ID3D11Buffer* vsCbs[] = { m_cbWorld3D.Get(), m_cbView3D.Get(), m_cbProjection3D.Get() };
     m_context->VSSetConstantBuffers(0, 3, vsCbs); // b0, b1, b2
 
+    /*
     // --- Get Shadow Buffer ---
     m_context->VSSetConstantBuffers(3, 1, m_cbShadow.GetAddressOf());
+    */
 
     // --- PS Buffers (b1, b2, b3) ---
     ID3D11Buffer* psCbs[] = {

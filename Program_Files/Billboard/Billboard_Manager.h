@@ -7,9 +7,7 @@
 ==============================================================================*/
 #ifndef BILLBOARD_MANAGER_H
 #define BILLBOARD_MANAGER_H
-
-#include <vector>
-#include <DirectXMath.h>
+#include "Project_Header.h"
 #include "Collision.h"
 #include "Billboard_Object.h"
 #include "Billboard_Target.h"

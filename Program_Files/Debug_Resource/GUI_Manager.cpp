@@ -5,6 +5,7 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "GUI_Manager.h"
 #include "Light_Manager.h"
 #include "Player.h"

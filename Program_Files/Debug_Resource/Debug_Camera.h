@@ -8,8 +8,6 @@
 #ifndef CAMERA_H
 #define CAMERA_H
 
-#include <DirectXMath.h>
-
 void Debug_Camera_Initialize(const DirectX::XMFLOAT3& POS,
 	const DirectX::XMFLOAT3& Front	= { 0.0f, 0.0f, 1.0f },
 	const DirectX::XMFLOAT3& Right	= { 0.0f, 1.0f, 0.0f },

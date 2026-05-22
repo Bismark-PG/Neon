@@ -8,9 +8,6 @@
 #ifndef PARTICLE_MANAGER_H
 #define PARTICLE_MANAGER_H
 
-#include <vector>
-#include <DirectXMath.h>
-
 enum class Particle_Type
 {
     EXP,   

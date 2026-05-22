@@ -16,10 +16,8 @@
 #define HAL_YOUHEI_MOUSE_H
 #pragma once
 
-
 #include <windows.h>
 #include <memory>
-
 
 // マウスモード
 typedef enum Mouse_PositionMode_tag

@@ -5,14 +5,13 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
-#include <d3d11.h>
-#include <DirectXMath.h>
-using namespace DirectX;
+#include "Project_Header.h"
 #include "direct3d.h"
 #include "Shader_Manager.h"
 #include "Debug_ostream.h"
 #include "Sprite.h"
 #include "Texture_Manager.h"
+using namespace DirectX;
 
 static constexpr int NUM_VERTEX = 4; // í∏ì_êî
 

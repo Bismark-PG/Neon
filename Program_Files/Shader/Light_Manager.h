@@ -8,9 +8,6 @@
 #ifndef LIGHT_MANAGER_H
 #define LIGHT_MANAGER_H
 
-#include <d3d11.h>
-#include <DirectXMath.h>
-
 extern bool g_IsSunRotation;
 extern float g_Sun_Angle, g_Sun_Tilt, g_Sun_Speed, g_Sun_Dist;            
 extern DirectX::XMFLOAT3 g_Sun_Dir;

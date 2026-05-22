@@ -5,6 +5,7 @@
     Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "debug_ostream.h"
 
 namespace Debug

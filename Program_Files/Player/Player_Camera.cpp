@@ -5,14 +5,13 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Player_Camera.h"
 #include "Player.h"
-#include <DirectXMath.h>
 #include "Shader_Manager.h"
 #include "direct3d.h"
 #include "KeyLogger.h"
-#include <algorithm>
-#include <debug_ostream.h>
+#include "debug_ostream.h"
 
 using namespace DirectX;
 

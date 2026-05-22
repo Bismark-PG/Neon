@@ -9,8 +9,6 @@
 #define GAME_WINDOW_H
 
 #define WIN32_LEAN_AND_MEAN
-#include <sdkddkver.h>
-#include <Windows.h>
 
 class Window_Manager
 {
@@ -44,13 +42,8 @@ private:
 	UINT m_ScreenHeight = 1080;
 	bool m_IsMessageBoxOpen = false;
 
-#if defined(DEBUG) || defined(_DEBUG)
-	static constexpr char WINDOW_CLASS[] = "Hyper Trigger";
-	static constexpr char TITLE[] = "Hyper Trigger";
-#else
 	static constexpr wchar_t WINDOW_CLASS[] = L"Hyper Trigger";
 	static constexpr wchar_t TITLE[] = L"Hyper Trigger";
-#endif
 };
 
 extern float SCREEN_WIDTH;

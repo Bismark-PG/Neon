@@ -7,7 +7,6 @@
 ==============================================================================*/
 #ifndef GAME_TEXTURE_H
 #define GAME_TEXTURE_H
-#include <string>
 
 void Game_Texture_Initialize();
 void Game_Texture_Finalize();

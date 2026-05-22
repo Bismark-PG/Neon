@@ -9,13 +9,11 @@
 #ifndef FADE_H
 #define FADE_H
 #include "Palette.h"
-using namespace PALETTE;
-
-#include <algorithm>
 #include "Debug_ostream.h"
 #include "direct3d.h"
 #include "sprite.h"
 #include "Texture_Manager.h"
+using namespace PALETTE;
 
 enum class FADE_STATE
 {

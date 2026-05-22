@@ -5,10 +5,11 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Sprite_Animation.h"
 #include "Sprite.h"
 #include "Texture_Manager.h"
-#include <debug_ostream.h>
+#include "debug_ostream.h"
 using namespace DirectX;
 
 struct AniPatternData

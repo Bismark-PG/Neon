@@ -5,13 +5,13 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 
 #include "Cube.h"
 #include "direct3d.h"
-#include <DirectXMath.h>
-using namespace DirectX;
 #include "Texture_Manager.h"
 #include "Shader_Manager.h"
+using namespace DirectX;
 
 static constexpr int NUM_VERTEX = 4 * 6; // ’¸“_”
 static constexpr int NUM_INDEX  = 3 * 2 * 6; // Count Of Index
@@ -159,22 +159,6 @@ void Cube_Draw(XMMATRIX W_Matrix, Shader_Filter Filter, Cube_Type Type)
 	// g_pContext->Draw(NUM_VERTEX, 0); 
 	
 	// Draw With Index
-	g_pContext->DrawIndexed(NUM_INDEX, 0, 0);
-}
-
-void Cube_Draw_Shadow(DirectX::XMMATRIX W_Matrix, DirectX::XMMATRIX LightViewProj)
-{
-	// Send Matrix To Shader
-	Shader_Manager::GetInstance()->SetShadowWorldMatrix(W_Matrix, LightViewProj);
-
-	// Set Vertex, Index Buffer
-	UINT stride = sizeof(Vertex3D);
-	UINT offset = 0;
-	g_pContext->IASetVertexBuffers(0, 1, &Vertex_Buffer, &stride, &offset);
-	g_pContext->IASetIndexBuffer(Index_Buffer, DXGI_FORMAT_R16_UINT, 0);
-	g_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// Draw
 	g_pContext->DrawIndexed(NUM_INDEX, 0, 0);
 }
 

@@ -7,8 +7,8 @@
 ==============================================================================*/
 #ifndef BILLBOARD_H
 #define BILLBOARD_H
-#include <DirectXMath.h>
-#include <Shader_Manager.h>
+
+#include "Shader_Manager.h"
 
 class Animation;
 

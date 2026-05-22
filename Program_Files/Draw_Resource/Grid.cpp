@@ -5,9 +5,9 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Grid.h"
 #include "direct3d.h"
-#include <DirectXMath.h>
 #include "Shader_Manager.h"
 using namespace DirectX;
 

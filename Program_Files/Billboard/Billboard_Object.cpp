@@ -5,6 +5,7 @@
     Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Billboard_Object.h"
 
 Billboard_Object::Billboard_Object(int texID, const DirectX::XMFLOAT3& pos, float scaleX, float scaleY)

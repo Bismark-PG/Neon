@@ -5,9 +5,8 @@
     Author : Choi HyungJoon
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Collision.h"
-#include <cmath>
-#include <algorithm>
 using namespace DirectX;
 
 bool Collision_Is_Overlap_Circle(const Circle& a, const Circle& b)

@@ -8,9 +8,6 @@
 #ifndef DEBUG_OSTREAM_H
 #define DEBUG_OSTREAM_H
 
-#include <Windows.h>
-#include <sstream>
-
 using namespace std;
 
 namespace Debug
