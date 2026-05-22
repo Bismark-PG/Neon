@@ -11,7 +11,6 @@
 ==============================================================================*/
 #include "Shader_Manager.h"
 #include "debug_ostream.h"
-#include "Model.h"
 #include <fstream>
 
 using namespace DirectX;
@@ -165,22 +164,14 @@ bool Shader_Manager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
     HRESULT hr = m_device->CreateBuffer(&bd, nullptr, m_cbBillboardUV.GetAddressOf());
     if (FAILED(hr))
     {
-#if defined(DEBUG) || defined(_DEBUG)
-        MessageBox(nullptr, "Failed to create UV constant buffer.", "Error", MB_OK);
-#else
         MessageBox(nullptr, L"Failed to create UV constant buffer.", L"Error", MB_OK);
-#endif
         return false;
     }
 
     hr = m_device->CreateBlendState(&blendDesc, m_BlendStateAlpha.GetAddressOf());
     if (FAILED(hr))
     {
-#if defined(DEBUG) || defined(_DEBUG)
-        MessageBox(nullptr, "Failed to create Alpha Blend State", "Error", MB_OK);
-#else
         MessageBox(nullptr, L"Failed to create Alpha Blend State", L"Error", MB_OK);
-#endif
         return false;
     }
 
@@ -188,11 +179,7 @@ bool Shader_Manager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
     hr = m_device->CreateBlendState(&blendDesc, m_BlendStateOpaque.GetAddressOf());
     if (FAILED(hr))
     {
-#if defined(DEBUG) || defined(_DEBUG)
-        MessageBox(nullptr, "Failed to create Opaque Blend State", "Error", MB_OK);
-#else
         MessageBox(nullptr, L"Failed to create Opaque Blend State", L"Error", MB_OK);
-#endif
         return false;
     }
 
@@ -218,22 +205,14 @@ bool Shader_Manager::Init(ID3D11Device* device, ID3D11DeviceContext* context)
 
     if (FAILED(m_device->CreateRasterizerState(&rasterDesc, m_RS_CullNone.GetAddressOf())))
     {
-#if defined(DEBUG) || defined(_DEBUG)
-        MessageBox(nullptr, "Failed to create Cull None Mode", "Error", MB_OK);
-#else
         MessageBox(nullptr, L"Failed to create Cull None Mode", L"Error", MB_OK);
-#endif
         return false;
     }
 
     rasterDesc.CullMode = D3D11_CULL_BACK;
     if (FAILED(m_device->CreateRasterizerState(&rasterDesc, m_RS_CullBack.GetAddressOf())))
     {
-#if defined(DEBUG) || defined(_DEBUG)
-        MessageBox(nullptr, "Failed to create Cull Back Mode", "Error", MB_OK);
-#else
         MessageBox(nullptr, L"Failed to create Cull Back Mode", L"Error", MB_OK);
-#endif
         return false;
     }
 
@@ -517,6 +496,7 @@ void Shader_Manager::SetPointLightCount(int count)
     m_PointLightData.point_light_count = count;
 }
 
+/*
 //============================================================
 //          --- Methods for 3D Model Animation ---
 //============================================================
@@ -833,6 +813,7 @@ void Shader_Manager::ResetShadowQuality()
         m_ShadowManager->Reset_PCF();
     }
 }
+*/
 
 //============================================================
 //              --- Private Helper Methods ---

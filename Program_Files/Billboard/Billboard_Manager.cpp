@@ -146,67 +146,6 @@ void Billboard_Manager::Create(const XMFLOAT3& pos, Billboard_Type Type)
     Debug::D_Out << "[Billboard] Object Pool Full!" << std::endl;
 }
 
-void Billboard_Manager::Create_Weapon(const DirectX::XMFLOAT3& pos, WeaponType wType, Billboard_Object** Box_Icon)
-{
-    std::string Tex_Name = "";
-    float Scale = 2.0f;
-
-    switch (wType)
-    {
-    case WeaponType::HANDGUN:      
-        Tex_Name = "UI_Drop_Box_HG";
-        break;
-
-    case WeaponType::ASSAULT_RIFLE: 
-        Tex_Name = "UI_Drop_Box_AR";
-        break;
-
-    case WeaponType::MACHINE_GUN:  
-        Tex_Name = "UI_Drop_Box_MG";
-        break;
-
-    case WeaponType::GRENADE:     
-        Tex_Name = "UI_Drop_Box_G";
-        break;
-
-    default: 
-        return;
-    }
-
-    int Box_Tex_ID = Texture_Manager::GetInstance()->GetID(Tex_Name);
-
-    if (Box_Tex_ID == -1)
-    {
-        Debug::D_Out << "[Billboard] Weapon Box Texture Not Found : " << Tex_Name << std::endl;
-        return;
-    }
-
-    DirectX::XMFLOAT3 Spawn_Pos = pos;
-    Spawn_Pos.y += 3.0f; // Over The Box
-
-    // Object Pooling
-    for (auto* obj : m_ObjectPool)
-    {
-        // Find Inactive
-        if (!obj->IsActive())
-        {
-            // Reuse & Set Properties
-            obj->Reset_State(Box_Tex_ID, Spawn_Pos, Scale, Scale);
-            obj->SetLifeTime(Box_Icon_LifeTime);
-            obj->Activate(Spawn_Pos);
-
-            // Link Pointer
-            if (Box_Icon)
-            {
-                *Box_Icon = obj;
-            }
-            return;
-        }
-    }
-
-    Debug::D_Out << "[Billboard] Weapon Box Pool Full!" << std::endl;
-}
-
 void Billboard_Manager::Create_Effect(const XMFLOAT3& pos, int patternID, float scale, Effect_Type Type)
 {
     int finalPatternID = patternID;

@@ -11,7 +11,7 @@
 #include <d3d11.h>
 #include <DirectXMath.h>
 #include <wrl/client.h> // ComPtr
-#include "Shadow_Manager.h"
+// #include "Shadow_Manager.h"
 #include <memory>
 #include <vector>
 
@@ -113,6 +113,7 @@ public:
     void SetPointLight(int index, const DirectX::XMFLOAT3& worldPosition, float range, const DirectX::XMFLOAT4& color); // Shader b4
     void SetPointLightCount(int count);
 
+    /*
     // --- Methods for 3D Model Animation ---
     void Begin3D_Skinning(Shader_Filter Filter = Shader_Filter::ANISOTROPIC);
     void SetBones(const DirectX::XMFLOAT4X4* bones, int count); // Send Bone Data
@@ -153,6 +154,7 @@ public:
 
     // Getter
     Shadow_Manager* GetShadowManager() { return m_ShadowManager.get(); }
+    */
 
 private:
     Shader_Manager() = default;
@@ -211,11 +213,12 @@ private:
     Microsoft::WRL::ComPtr<ID3D11SamplerState> m_sampler_Linear;
     Microsoft::WRL::ComPtr<ID3D11SamplerState> m_sampler_AnisoTropic;
 
+    /*
     // --- 3D Model Animation Shader Resources ---
     Microsoft::WRL::ComPtr<ID3D11VertexShader> m_vsSkinning;
     Microsoft::WRL::ComPtr<ID3D11InputLayout>  m_ilSkinning;
     Microsoft::WRL::ComPtr<ID3D11Buffer>       m_cbBones;       // VS b3
-
+ 
     // --- Shadow Resources ---
     std::unique_ptr<Shadow_Manager> m_ShadowManager; // Shadow Manager Instance
 
@@ -230,6 +233,7 @@ private:
 	// Rasterizer States For Shadow Pass
     Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_RS_CullNone;
     Microsoft::WRL::ComPtr<ID3D11RasterizerState> m_RS_CullBack;
+    */
 
 	// Shadow Quality Parameters For GUI
 	Microsoft::WRL::ComPtr<ID3D11Buffer> m_cbShadowParams;          // PS b5 for Shadow Parameters

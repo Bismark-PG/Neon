@@ -11,7 +11,6 @@
 #include <vector>
 #include <DirectXMath.h>
 #include "Collision.h"
-#include "Weapon_Info.h"
 #include "Billboard_Object.h"
 #include "Billboard_Target.h"
 #include "Billboard_Effect.h"
@@ -48,7 +47,6 @@ public:
     void Draw();
 
     void Create(const DirectX::XMFLOAT3& pos, Billboard_Type Type);
-    void Create_Weapon(const DirectX::XMFLOAT3& pos, WeaponType wType, Billboard_Object** Box_Icon);
     void Create_Effect(const DirectX::XMFLOAT3& pos, int patternID, float scale, Effect_Type Type);
 
     Billboard_Target* Check_Collision(const AABB& box);
