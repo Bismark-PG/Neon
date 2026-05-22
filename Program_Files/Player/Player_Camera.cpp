@@ -23,25 +23,21 @@ constexpr float CAMERA_ROTATION_SCALE = 0.005f;
 #define XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE 8689
 
 // Player Camera Parameter
-static float Camera_Yaw = 0.0f, Camera_Pitch = 0.0f;
+static float Camera_Yaw = 0.0f, Camera_Pitch = 0.3f;
 static float Camera_Near_Z = 0.1f, Camera_Far_z = 1000.0f;
-constexpr float Change_Lerp_Speed = 15.0f;
-constexpr float Jump_Dist = 1.5f, Run_Dist = 1.2f;
 
 // Sensitivity
-static float Mouse_Sensitivity = 0.01f; // Base Setting (From Option)
-static float Apply_Sensitivity = 0.01f; // Real used value (Lerped)
+static float Mouse_Sensitivity = 0.005f; // Base Setting (From Option)
+static float Apply_Sensitivity = 0.005f; // Real used value
 
-// --- Vectors & Matrices ---
-static XMFLOAT4X4 Camera_View_mtx = {};
+// Matrices & Pos
+static DirectX::XMFLOAT4X4 Camera_View_mtx;
+static XMFLOAT3 Current_Camera_Pos = { 0.0f, 5.0f, -15.0f };
+static XMFLOAT3 Camera_Front = { 0.0f, 0.0f, 1.0f };
 static XMFLOAT3 Camera_POS = {};
-static XMFLOAT3 Camera_Front = {};
-static XMFLOAT3 Current_Camera_Pos = {};
 
 void Player_Camera_Initialize()
 {
-    Camera_POS = { 0.0f, 0.0f, 0.0f };
-    Camera_Front = { 0.0f, 0.0f, 1.0f };
 }
 
 void Player_Camera_Finalize()
@@ -62,79 +58,41 @@ void Player_Camera_Update(double elapsed_time)
 
     // --- Rotation Logic ---
     // Get Mouse Movement
-    float mouseMoveX = KeyLogger_GetMouse_MoveX() * Apply_Sensitivity;
-    float mouseMoveY = KeyLogger_GetMouse_MoveY() * Apply_Sensitivity;
-
-    //Get Controller Input (Right Stick)
-    if (XKeyLogger_IsControllerInput())
-    {
-        XMFLOAT2 RightStick = XKeyLogger_GetRightStick();
-        float padMoveX = 0.0f;
-        float padMoveY = 0.0f;
-
-        // Check Deadzone
-        if (abs(RightStick.x) > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE || abs(RightStick.y) > XINPUT_GAMEPAD_RIGHT_THUMB_DEADZONE)
-        {
-            // Normalize (0.0 ~ 1.0)
-            float normX = RightStick.x / CONTROLLER_STICK_MAX;
-            float normY = RightStick.y / CONTROLLER_STICK_MAX;
-
-            // Apply Weight & Time & Shared Sensitivity
-            padMoveX = normX * CONTROLLER_STICK_WEIGHT * dt * Apply_Sensitivity;
-            padMoveY = normY * CONTROLLER_STICK_WEIGHT * dt * Apply_Sensitivity;
-        }
-
-        // Add Angle
-        Camera_Yaw += padMoveX;
-        Camera_Pitch -= padMoveY;
-    }
-    else
-    {
-        // Add Angle
-        Camera_Yaw += mouseMoveX;
-        Camera_Pitch += mouseMoveY;
-    }
+    Camera_Yaw = KeyLogger_GetMouse_MoveX() * Apply_Sensitivity;
+    Camera_Pitch = KeyLogger_GetMouse_MoveY() * Apply_Sensitivity;
 
     // Limited Pitch 
-    Camera_Pitch = std::max(-XM_PIDIV2 * 0.8f, std::min(Camera_Pitch, XM_PIDIV2 * 0.8f)); // -80 ~ +80
-
-    // Make Rotation
-    XMMATRIX rotation = XMMatrixRotationRollPitchYaw(Camera_Pitch, Camera_Yaw, 0);
+    if (Camera_Pitch > 1.2f) Camera_Pitch = 1.2f;
+    if (Camera_Pitch < -0.2f) Camera_Pitch = -0.2f;
 
     // --- Position Calculation ---
     // Get Player POS
-    XMVECTOR playerPos = XMLoadFloat3(&Player_Get_POS());
+    XMFLOAT3 Player_POS = Player_Get_POS();
+    XMVECTOR vPlayer_POS = XMLoadFloat3(&Player_POS);
 
-    // Set Camera FOV, POS
-    XMVECTOR baseTargetPos = playerPos + XMVectorSet(0.0f, 2.0, 0.0f, 0.0f);
-    XMVECTOR offset = XMVectorSet(0.0f, 0.0f, -1.0, 0.0f);
-    XMVECTOR baseCameraPos = XMVector3Transform(offset, rotation) + baseTargetPos;
+    // Get Camera Forward
+    XMMATRIX Rotation = XMMatrixRotationRollPitchYaw(Camera_Pitch, Camera_Yaw, 0.0f);
+    XMVECTOR vForward = XMVector3TransformCoord(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), Rotation);
+    XMStoreFloat3(&Camera_Front, vForward);
 
-    // Get Camera Right Vector
-    XMMATRIX yawRotation = XMMatrixRotationY(Camera_Yaw);
-    XMVECTOR horizontalRightVec = XMVector3Transform(XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f), yawRotation);
+    // Get Target Camera POS
+    float camDist = 15.0f;
+    XMVECTOR vDesired_POS = vPlayer_POS - (vForward * camDist);
 
-    // Get Final Camera POS
-    XMVECTOR shiftVector = horizontalRightVec;
-
-    XMVECTOR finalCameraPos = baseCameraPos + shiftVector;
-    XMVECTOR finalTargetPos = baseTargetPos + shiftVector;
+    // Camera Lerp
+    XMVECTOR vCurrent_POS = XMLoadFloat3(&Current_Camera_Pos);
+    float Lerp_Speed = 10.0f;
+    vCurrent_POS = XMVectorLerp(vCurrent_POS, vDesired_POS, static_cast<float>(elapsed_time) * Lerp_Speed);
+    XMStoreFloat3(&Current_Camera_Pos, vCurrent_POS);
 
     // --- Matrix Update ---
     // Make View Matrix
-    XMMATRIX mtxView = XMMatrixLookAtLH(finalCameraPos, finalTargetPos, { 0.0f,1.0f,0.0f });
-    XMStoreFloat4x4(&Camera_View_mtx, mtxView);
+    XMMATRIX mtxView = XMMatrixLookAtLH(vCurrent_POS, vCurrent_POS + vForward, XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
     Shader_Manager::GetInstance()->SetViewMatrix3D(mtxView);
-    XMStoreFloat3(&Current_Camera_Pos, finalCameraPos);
-
-    // Get Camera Front Vector
-    XMVECTOR front = XMVector3Transform(XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f), rotation);
-    XMStoreFloat3(&Camera_Front, front);
 
     //--- Projection Matrix ---
-	float Ratio = static_cast<float>(Direct3D_GetBackBufferWidth()) / Direct3D_GetBackBufferHeight();
-	XMMATRIX mtxPerspective = XMMatrixPerspectiveFovLH(XMConvertToRadians(70.0f), Ratio, Camera_Near_Z, Camera_Far_z);
-
+    float Ratio = static_cast<float>(Direct3D_GetBackBufferWidth()) / Direct3D_GetBackBufferHeight();
+    XMMATRIX mtxPerspective = XMMatrixPerspectiveFovLH(XMConvertToRadians(60.0f), Ratio, Camera_Near_Z, Camera_Far_z);
     Shader_Manager::GetInstance()->SetProjectionMatrix3D(mtxPerspective);
 }
 

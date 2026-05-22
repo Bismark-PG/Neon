@@ -127,62 +127,8 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 			{
 				Exec_Last_Time = Current_Time; // Save Last Time
 
-				Fade_Update(Elapsed_Time);
-
-				// Set Key Logger With FPS
-				KeyLogger_Update();
-				Controller_Set_Update();
-				IS_Controller_Set = Controller_Set_UP();
-
-				// Update Game Texture
-				if (IS_Controller_Set)
-				{
-					SpriteAni_Update(Elapsed_Time);
-				}
-				else if (!IS_Controller_Set)
-				{
-					SpriteAni_Update(Elapsed_Time);
-				}
-
-				// Draw Texture
-				Direct3D_Clear();
-				Sprite_Begin();
-
-				// Real Draw Startq
-
-				// Controller Input Alert
-				Controller_Set_Draw();
-
-				// Draw GUI
-					// Start the Dear ImGui frame
-				ImGui_ImplDX11_NewFrame();
-				ImGui_ImplWin32_NewFrame();
-				ImGui::NewFrame();
-				ImGui::GetIO().MouseDrawCursor = true;
-
-				// Player, Camera, Debug Collision, Animation Model
-				GUI_Model_Editor(FPS);
-
-				// Light, Map System
-				GUI_World_Editor();
-
-				ImGui::Render();
-				ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
-#if defined(DEBUG) || defined(_DEBUG)
-				std::stringstream Debug_FPS_State;
-				Debug_FPS_State << "FPS : " << FPS << std::endl;
-
-				Debug->Print(Debug_FPS_State.str().c_str(), PALETTE::Light_Green);
-
-				Debug->Draw();
-				Debug->Clear();
-#endif	
-
-				// Fade Draw
-				Fade_Draw();
-
-				Direct3D_Present();
+				System_Manager::GetInstance().Update(Elapsed_Time, IS_Controller_Set);
+				System_Manager::GetInstance().Draw(FPS);
 
 				Frame_Count++;
 			}

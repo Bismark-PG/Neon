@@ -22,6 +22,8 @@
 #include "Light_Manager.h"
 
 // Draw Set
+#include "Cube.h"
+#include "Grid.h"
 #include "Sprite.h"
 #include "Sprite_Animation.h"
 #include "Texture_Manager.h"
@@ -35,6 +37,8 @@
 // Game Set
 #include "Player.h"
 #include "Player_Camera.h"
+#include "Main_Game.h"
+
 // Debug Set
 #include "debug_text.h"
 #include "Debug_Camera.h"

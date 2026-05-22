@@ -25,6 +25,8 @@ void System_Manager::Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceCon
 	Light_Manager::GetInstance().Init();
 
 	// Initialize Texture Tools
+	Grid_Initialize(Device, Context);
+	Cube_Initialize(Device, Context);
 	Texture_Manager::GetInstance()->Init(Device, Context);
 	Game_Texture_Initialize();
 	Sprite_Initialize(Device, Context);
@@ -40,6 +42,65 @@ void System_Manager::Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceCon
 	GUI_Init(hWnd, Device, Context);
 	Debug_Camera_Initialize();
 	Debug_Collision_Initialize(Device);
+}
+
+void System_Manager::Update(double elapsed_time, bool IS_Controller_Set)
+{
+	Fade_Update(elapsed_time);
+
+	// Set Key Logger With FPS
+	KeyLogger_Update();
+	Controller_Set_Update();
+	IS_Controller_Set = Controller_Set_UP();
+
+	// Update Game Texture
+	if (IS_Controller_Set)
+	{
+		SpriteAni_Update(elapsed_time);
+	}
+	else if (!IS_Controller_Set)
+	{
+		SpriteAni_Update(elapsed_time);
+	}
+
+	// Update Main Logic
+	Main_Game_Update(elapsed_time);
+}
+
+void System_Manager::Draw(double FPS)
+{
+	// Draw Texture
+	Direct3D_Clear();
+	Sprite_Begin();
+
+	// Real Draw Start
+	Main_Game_Draw();
+
+	// Controller Input Alert
+	Controller_Set_Draw();
+
+#if defined(DEBUG) || defined(_DEBUG)
+	// Draw GUI
+		// Start the Dear ImGui frame
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+	ImGui::GetIO().MouseDrawCursor = true;
+
+	// Player, Camera, Debug Collision, Animation Model
+	GUI_Model_Editor(FPS);
+
+	// Light, Map System
+	GUI_World_Editor();
+
+	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+#endif	
+
+	// Fade Draw
+	Fade_Draw();
+
+	Direct3D_Present();
 }
 
 void System_Manager::Finalize()
@@ -59,6 +120,8 @@ void System_Manager::Finalize()
 	Sprite_Finalize();
 	Game_Texture_Finalize();
 	Texture_Manager::GetInstance()->Final();
+	Cube_Finalize();
+	Grid_Finalize();
 
 	// Finalize Shader Tools
 	Shader_Manager::GetInstance()->Final();

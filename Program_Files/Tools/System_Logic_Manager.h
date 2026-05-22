@@ -20,6 +20,9 @@ public:
     void Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceContext* Context);
     void Finalize();
 
+    void Update(double elapsed_time, bool IS_Controller_Set);
+    void Draw(double FPS);
+
     System_Manager(const System_Manager&) = delete;
     System_Manager& operator=(const System_Manager&) = delete;
 

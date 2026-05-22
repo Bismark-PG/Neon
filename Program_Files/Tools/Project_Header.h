@@ -1,6 +1,6 @@
 /*==============================================================================
 
-	PHC Helper Header For Programe [Project_Header.h]
+	PHC Header For Programe [Project_Header.h]
 
 	Author : Choi HyungJoon
 
