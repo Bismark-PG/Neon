@@ -1,23 +1,13 @@
-//--------------------------------------------------------------------------------------
-// File: mouse.h
-//
-// 便利なマウスモジュール
-//
-//--------------------------------------------------------------------------------------
-// 2020/02/11
-//     DirectXTKより、なんちゃってC言語用にシェイプアップ改変
-//
-// Licensed under the MIT License.
-//
-// http://go.microsoft.com/fwlink/?LinkId=248929
-// http://go.microsoft.com/fwlink/?LinkID=615561
-//--------------------------------------------------------------------------------------
-#ifndef HAL_YOUHEI_MOUSE_H
-#define HAL_YOUHEI_MOUSE_H
-#pragma once
+/*==============================================================================
 
-#include <windows.h>
-#include <memory>
+    Mouse Input Manager [mouse.h]
+
+    Author : Choi HyungJoon
+
+==============================================================================*/
+#ifndef MOUSE_H
+#define MOUSE_H
+#pragma once
 
 // マウスモード
 typedef enum Mouse_PositionMode_tag
@@ -119,4 +109,4 @@ void Mouse_UI_set();
 // }
 //
 
-#endif // HAL_YOUHEI_MOUSE_H
+#endif // MOUSE_H

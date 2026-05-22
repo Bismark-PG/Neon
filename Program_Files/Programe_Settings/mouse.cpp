@@ -1,21 +1,13 @@
-//--------------------------------------------------------------------------------------
-// File: mouse.cpp
-//
-// 便利なマウスモジュール
-//
-//--------------------------------------------------------------------------------------
-// 2020/02/11
-//     DirectXTKより、なんちゃってC言語用にシェイプアップ改変
-//
-// Licensed under the MIT License.
-//
-// http://go.microsoft.com/fwlink/?LinkId=248929
-// http://go.microsoft.com/fwlink/?LinkID=615561
-//--------------------------------------------------------------------------------------
+/*==============================================================================
+
+    Mouse Input Manager [mouse.cpp]
+
+    Author : Choi HyungJoon
+
+==============================================================================*/
+#include "Project_Header.h"
 #include "mouse.h"
-#include <iostream>
 #include <windowsx.h>
-#include <assert.h>
 #include "Sprite.h"
 #include "Texture_Manager.h"
 #include "debug_ostream.h"

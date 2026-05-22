@@ -1,23 +1,13 @@
-//--------------------------------------------------------------------------------------
-// File: Keyboard.h
-//
-// キーボードモジュール
-//
-//--------------------------------------------------------------------------------------
-// 2020/06/07
-//     DirectXTKより、なんちゃってC言語用にシェイプアップ改変
-//
-// Licensed under the MIT License.
-//
-// http://go.microsoft.com/fwlink/?LinkId=248929
-// http://go.microsoft.com/fwlink/?LinkID=615561
-//--------------------------------------------------------------------------------------
-#ifndef HAL_YOUHEI_KEYBOARD_H
-#define HAL_YOUHEI_KEYBOARD_H
-#pragma once
+/*==============================================================================
 
-#include <windows.h>
-#include <memory>
+    Keyboard Input Manager [keyboard.h]
+
+    Author : Choi HyungJoon
+
+==============================================================================*/
+#ifndef KEYBOARD_H
+#define KEYBOARD_H
+#pragma once
 
 // キー列挙
 typedef enum Keyboard_Keys_tag : unsigned char
@@ -433,4 +423,4 @@ void Keyboard_ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam);
 //
 
 
-#endif // HAL_YOUHEI_KEYBOARD_H
+#endif // KEYBOARD_H

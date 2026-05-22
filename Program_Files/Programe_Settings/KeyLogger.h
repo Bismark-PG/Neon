@@ -10,8 +10,6 @@
 #define KEY_LOGGER_H
 #include "mouse.h"
 #include "keyboard.h"
-#include <Xinput.h>
-#include <DirectXMath.h>
 #include "Frame.h"
 
 enum Mouse_Button

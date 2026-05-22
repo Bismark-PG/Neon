@@ -1,27 +1,15 @@
-//--------------------------------------------------------------------------------------
-// File: Keyboard.cpp
-//
-// キーボードモジュール
-//
-//--------------------------------------------------------------------------------------
-// 2020/06/07
-//     DirectXTKより、なんちゃってC言語用にシェイプアップ改変
-//
-// Licensed under the MIT License.
-//
-// http://go.microsoft.com/fwlink/?LinkId=248929
-// http://go.microsoft.com/fwlink/?LinkID=615561
-//--------------------------------------------------------------------------------------
+/*==============================================================================
+
+    Keyboard Input Manager [keyboard.h]
+
+    Author : Choi HyungJoon
+
+==============================================================================*/
+#include "Project_Header.h"
 #include "keyboard.h"
 
-#include <assert.h>
-
-
 static_assert(sizeof(Keyboard_State) == 256 / 8, "キーボード状態構造体のサイズ不一致");
-
-
 static Keyboard_State gState = {};
-
 
 static void keyDown(int key)
 {
@@ -32,7 +20,6 @@ static void keyDown(int key)
     p[(key >> 5)] |= bf;
 }
 
-
 static void keyUp(int key)
 {
     if (key < 0 || key > 0xfe) { return; }
@@ -42,12 +29,10 @@ static void keyUp(int key)
     p[(key >> 5)] &= ~bf;
 }
 
-
 void Keyboard_Initialize(void)
 {
     Keyboard_Reset();
 }
-
 
 bool Keyboard_IsKeyDown(Keyboard_Keys key, const Keyboard_State* pState)
 {
@@ -60,7 +45,6 @@ bool Keyboard_IsKeyDown(Keyboard_Keys key, const Keyboard_State* pState)
     return false;
 }
 
-
 bool Keyboard_IsKeyUp(Keyboard_Keys key, const Keyboard_State* pState)
 {
     if (key <= 0xfe)
@@ -72,18 +56,15 @@ bool Keyboard_IsKeyUp(Keyboard_Keys key, const Keyboard_State* pState)
     return false;
 }
 
-
 bool Keyboard_IsKeyDown(Keyboard_Keys key)
 {
     return Keyboard_IsKeyDown(key, &gState);
 }
 
-
 bool Keyboard_IsKeyUp(Keyboard_Keys key)
 {
     return Keyboard_IsKeyUp(key, &gState);
 }
-
 
 // キーボードの現在の状態を取得する
 const Keyboard_State* Keyboard_GetState(void)
@@ -91,12 +72,10 @@ const Keyboard_State* Keyboard_GetState(void)
     return &gState;
 }
 
-
 void Keyboard_Reset(void)
 {
     ZeroMemory(&gState, sizeof(Keyboard_State));
 }
-
 
 // キーボード制御のためのウォンどうメッセージプロシージャフック関数
 void Keyboard_ProcessMessage(UINT message, WPARAM wParam, LPARAM lParam)

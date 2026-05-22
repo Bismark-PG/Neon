@@ -103,12 +103,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		return true;
 
 	bool Allow_Mouse_Input = true;
-	Main_Screen Current_State = Game_Manager::GetInstance()->Get_Current_Main_Screen();
-
-	if (Current_State == Main_Screen::M_WAIT || Current_State == Main_Screen::MAIN)
-	{
-		Allow_Mouse_Input = false;
-	}
 
 	if (Allow_Mouse_Input)
 	{

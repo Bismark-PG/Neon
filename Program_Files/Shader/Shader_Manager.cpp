@@ -9,9 +9,9 @@
         > Function Type  : Pointer
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Shader_Manager.h"
 #include "debug_ostream.h"
-#include <fstream>
 
 using namespace DirectX;
 using namespace Microsoft::WRL;

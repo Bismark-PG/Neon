@@ -8,13 +8,6 @@
 #ifndef SHADER_MANAGER_H
 #define SHADER_MANAGER_H
 
-#include <d3d11.h>
-#include <DirectXMath.h>
-#include <wrl/client.h> // ComPtr
-// #include "Shadow_Manager.h"
-#include <memory>
-#include <vector>
-
 enum class Shader_Filter
 {
     MAG_MIP_POINT,   // No filtering (Pixelated look)

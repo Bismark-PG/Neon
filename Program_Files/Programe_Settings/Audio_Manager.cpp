@@ -9,10 +9,8 @@
         > Function Type  : Pointer
 
 ==============================================================================*/
+#include "Project_Header.h"
 #include "Audio_Manager.h"
-#include <assert.h>
-#include <mmsystem.h>
-#include <algorithm>
 #include "Debug_ostream.h"
 // SFX Lifetime Manager
 // If SFX Play Done, Destroy Voice

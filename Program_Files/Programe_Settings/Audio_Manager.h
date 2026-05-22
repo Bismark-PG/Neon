@@ -8,13 +8,6 @@
 #ifndef AUDIO_MANAGER_H
 #define AUDIO_MANAGER_H
 
-#include <xaudio2.h>
-#include <string>
-#include <map>
-#include <vector>
-#include <mutex>
-#include <chrono>
-
 struct Sound_Data
 {
     IXAudio2SourceVoice* Source{};
