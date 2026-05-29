@@ -67,19 +67,6 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	// Initialize System Logic
 	System_Manager::GetInstance().Initialize(hWnd, Device, Context);
 
-	// Create Debug Text
-	std::unique_ptr<Text::DebugText> Debug;
-	auto Create_DebugText = [&]()
-		{
-			Debug = std::make_unique<Text::DebugText>(
-				Device, Context,
-				Texture_Manager::GetInstance()->GetID("Debug_Text"),
-				Direct3D_GetBackBufferWidth(), Direct3D_GetBackBufferHeight());
-			Debug->SetScale(0.75f);
-			Debug->SetOffset(10.0f, 10.0f);
-		};
-	Create_DebugText();
-
 	// Show Mouse (True = Show // False = Don`t Show)
 	// Mouse_SetVisible(false);
 	// Mouse Postion Mode
@@ -108,6 +95,15 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 		// Set Game
 		else
 		{
+			if (IF_IS_Game_Done())
+			{
+				// Game Done (EXIT)
+				if (Fade_GetState() == FADE_STATE::FINISHED_OUT)
+				{
+					PostQuitMessage(0);
+				}
+			}
+
 			// Time Set
 			Current_Time = SystemTimer_GetTime(); // Get System Time
 			double Elapsed_Time = Current_Time - FPS_Last_Time; // Get Time For FPS

@@ -197,20 +197,7 @@ void Shader_Manager::Begin2D(Shader_Filter Filter)
     ID3D11Buffer* cbs[] = { m_cbProjection2D.Get(), m_cbWorld2D.Get() };
     m_context->VSSetConstantBuffers(0, 2, cbs);
 
-    switch (Filter)
-    {
-    case Shader_Filter::MAG_MIP_POINT:
-        m_context->PSSetSamplers(0, 1, m_sampler_Point.GetAddressOf());
-        break;
-
-    case Shader_Filter::MAG_MIP_LINEAR:
-        m_context->PSSetSamplers(0, 1, m_sampler_Linear.GetAddressOf());
-        break;
-
-    case Shader_Filter::ANISOTROPIC:
-        m_context->PSSetSamplers(0, 1, m_sampler_AnisoTropic.GetAddressOf());
-        break;
-    }
+    SetSamplerState(Filter);
 
     SetAlphaBlend(true);
 }
@@ -264,20 +251,7 @@ void Shader_Manager::Begin3D(Shader_Filter Filter)
         m_context->Unmap(m_cbPointLightPS.Get(), 0);
     }
 
-    switch (Filter)
-    {
-    case Shader_Filter::MAG_MIP_POINT:
-        m_context->PSSetSamplers(0, 1, m_sampler_Point.GetAddressOf());
-        break;
-
-    case Shader_Filter::MAG_MIP_LINEAR:
-        m_context->PSSetSamplers(0, 1, m_sampler_Linear.GetAddressOf());
-        break;
-
-    case Shader_Filter::ANISOTROPIC:
-        m_context->PSSetSamplers(0, 1, m_sampler_AnisoTropic.GetAddressOf());
-        break;
-    }
+	SetSamplerState(Filter);
 
     // --- Set Shadow Buffer ---
     m_context->PSSetSamplers(1, 1, m_sampler_Linear.GetAddressOf());
@@ -334,6 +308,24 @@ void Shader_Manager::Begin_Billboard()
 void Shader_Manager::SetUVParameter(const UV_Parameter& parameter)
 {
     m_context->UpdateSubresource(m_cbBillboardUV.Get(), 0, nullptr, &parameter, 0, 0);
+}
+
+void Shader_Manager::SetSamplerState(Shader_Filter filter)
+{
+    switch (filter)
+    {
+    case Shader_Filter::MAG_MIP_POINT:
+        m_context->PSSetSamplers(0, 1, m_sampler_Point.GetAddressOf());
+        break;
+
+    case Shader_Filter::MAG_MIP_LINEAR:
+        m_context->PSSetSamplers(0, 1, m_sampler_Linear.GetAddressOf());
+        break;
+
+    case Shader_Filter::ANISOTROPIC:
+        m_context->PSSetSamplers(0, 1, m_sampler_AnisoTropic.GetAddressOf());
+        break;
+    }
 }
 
 // PS b0 (Diffuse Color)

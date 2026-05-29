@@ -38,6 +38,8 @@
 #include "Player.h"
 #include "Player_Camera.h"
 #include "Main_Game.h"
+#include "Main_Menu.h"
+#include "Update_Game.h"
 
 // Debug Set
 #include "debug_text.h"
@@ -48,6 +50,7 @@
 // Tools
 #include "Controller_Input.h"
 #include "Fade.h"
+#include "Heapler_Logic.h"
 
 // Other
 #include <sstream>

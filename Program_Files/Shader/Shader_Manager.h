@@ -84,6 +84,10 @@ public:
     void Begin_Billboard();
     void SetUVParameter(const UV_Parameter& parameter);
 
+    // --- Render States ---
+    void SetSamplerState(Shader_Filter filter);
+
+    // --- Light Setters ---
     void SetDiffuseColor(const DirectX::XMFLOAT4& color);                                                               // Shader b0
     void SetLightAmbient(const DirectX::XMFLOAT4& color);                                                               // Shader b1
     void SetLightDirectional(const DirectX::XMFLOAT4& worldDirection, const DirectX::XMFLOAT4& color);                  // Shader b2

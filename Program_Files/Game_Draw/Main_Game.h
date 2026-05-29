@@ -12,7 +12,7 @@
 void Main_Game_Initialize();
 void Main_Game_Finalize();
 
-void Main_Game_Update(double elapsed_time);
+void Main_Game_Update(float elapsed_time);
 void Main_Game_Draw();
 
 #endif

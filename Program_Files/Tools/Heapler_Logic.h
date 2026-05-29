@@ -1,12 +1,12 @@
 /*==============================================================================
 
-	Helper Logic For Random [Random_Heapler_Logic.h]
+	Helper Logic For Random [Heapler_Logic.h]
 
 	Author : Choi HyungJoon
 
 ==============================================================================*/
-#ifndef RANDOM_LOGIC_H
-#define RANDOM_LOGIC_H
+#ifndef HELPER_LOGIC_H
+#define HELPER_LOGIC_H
 
 // -----------------------------------------------------------
 // Core Logic For Random Logic 
@@ -77,4 +77,13 @@ inline float RandomFloat()			// (0.0 ~ 1.0)
 
 // -----------------------------------------------------------
 
-#endif // RANDOM_LOGIC_H
+// -----------------------------------------------------------
+// Logic For Random Clamp 
+// -----------------------------------------------------------
+inline float ClampFloat(float value, float min_val, float max_val)
+{
+	if (value < min_val) return min_val;
+	if (value > max_val) return max_val;
+	return value;
+}
+#endif // HELPER_LOGIC_H

@@ -36,6 +36,7 @@ void Game_Texture_Load()
     Texture_M->Load("K", L"Resource/Texture/BG/RGBCMYK/Black.png");
 
     //-------------------------------------------<< In Game Texture >>-------------------------------------------//
+    Texture_M->Load("Player", L"Resource/Texture/Other/OBJ.png");
    
 
     //---------------------------------------------<< Card Texture >>---------------------------------------------//
@@ -45,6 +46,11 @@ void Game_Texture_Load()
 
 
     //----------------------------------------------<< UI Texture >>----------------------------------------------//
+    //---------------------UI : Main Menu Texture---------------------//
+    Texture_M->Load("Start", L"Resource/Texture/UI/Menu_Start.png");
+    Texture_M->Load("Settings", L"Resource/Texture/UI/Menu_Settings.png");
+    Texture_M->Load("Exit", L"Resource/Texture/UI/Menu_Exit.png");
+    Texture_M->Load("UI_Back", L"Resource/Texture/UI/Menu_Back.png");
 
     //-------------------------------------------------Others Texture-------------------------------------------------//
     Texture_M->Load("Bismark_LOGO", L"Resource/Texture/Other/Bismark.jpg");

@@ -47,13 +47,6 @@ cbuffer PS_CONSTANT_BUFFER : register(b4)
     float3 point_light_dummy; //float4つ分ずつ送るためのdummy
 };
 
-cbuffer PS_SHADOW_PROP : register(b5)
-{
-    float PCF_Spread;       // PCF Spread (0.0f ~ 1.0f) : 0.0f = Sharp Shadow, 1.0f = Soft Shadow
-    int PCF_Loop;           // PCF Loop Count (1 ~ 5) : 1 = Sharp Shadow, 5 = Soft Shadow
-    float2 Padding_Shadow;  // Set 16Byte Alignment
-};
-
 struct PS_IN
 {
     float4 posH : SV_POSITION;
@@ -181,5 +174,7 @@ float4 main(PS_IN pi) : SV_TARGET
         color += point_light[i].color.rgb * material_color * A;
     }
     
-    return float4(color, alpha); //uvの座標のサンプラーのテクスチャの色を返す
+    return float4(normalW.xyz * 0.5f + 0.5f, 1.0f);
+    
+//    return float4(color, alpha); //uvの座標のサンプラーのテクスチャの色を返す
 }

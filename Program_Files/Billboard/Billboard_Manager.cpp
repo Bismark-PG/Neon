@@ -11,39 +11,46 @@
 #include "debug_ostream.h"
 using namespace DirectX;
 
-constexpr float Box_Icon_LifeTime = 15.0f;
+int Billboard_Enemy::Enemy_Normal_ID = -1;
+int Billboard_Bullet::Bullet_Normal_ID = -1;
+int Billboard_Effect::Explosion_Pattern_ID = -1;
+int Billboard_Effect::Smoke_Pattern_ID = -1;
 
 void Billboard_Manager::Init()
 {
-    m_ObjectPool.clear();
+    m_EnemyPool.clear();
+    m_BulletPool.clear();
     m_EffectPool.clear();
 
-    for (int i = 0; i < MAX_OBJECT_POOL; ++i)
+    Billboard_Enemy::Initialize_Resource();
+    Billboard_Bullet::Initialize_Resource();
+    Billboard_Effect::Initialize_Resource();
+
+	// Billboard Object Pool
+    for (int i = 0; i < MAX_ENEMY_POOL; ++i)
     {
-        m_ObjectPool.push_back(new Billboard_Object(-1, { 0,0,0 }, 1.0f, 1.0f));
+        m_EnemyPool.push_back(new Billboard_Enemy(-1, { 0,0,0 }, 1.0f, 1.0f));
     }
 
+    for (int i = 0; i < MAX_BULLET_POOL; ++i)
+    {
+        m_BulletPool.push_back(new Billboard_Bullet(-1, { 0,0,0 }, 1.0f, 1.0f));
+    }
+
+	// Billboard_Effect Pool
     for (int i = 0; i < MAX_EFFECT_POOL; ++i)
     {
         m_EffectPool.push_back(new Billboard_Effect());
-    }
-
-    int texID = Texture_Manager::GetInstance()->GetID("Enemy_Real_Explosion");
-    if (texID != -1)
-    {
-        XMUINT2 patternSize = { 64, 64 };
-        m_ExplosionPatternID = SpriteAni_Get_Pattern_Info(texID, 16, 4, 0.05, patternSize, { 0, 0 }, false);
-    }
-    else
-    {
-        Debug::D_Out << "[Billboard Manager] Explosion Texture Not Found!" << std::endl;
     }
 }
 
 void Billboard_Manager::Final()
 {
-    for (auto* obj : m_ObjectPool) delete obj;
-    m_ObjectPool.clear();
+    for (auto* effect : m_EnemyPool) delete effect;
+    m_EnemyPool.clear();
+    
+    for (auto* effect : m_BulletPool) delete effect;
+    m_BulletPool.clear();
 
     for (auto* effect : m_EffectPool) delete effect;
     m_EffectPool.clear();
@@ -51,8 +58,15 @@ void Billboard_Manager::Final()
 
 void Billboard_Manager::Reset()
 {
-    // Return All Objects
-    for (auto* obj : m_ObjectPool)
+    // Reset All Objects
+    for (auto* obj : m_EnemyPool)
+    {
+        if (obj->IsActive())
+        {
+            obj->Deactivate();
+        }
+    }
+    for (auto* obj : m_BulletPool)
     {
         if (obj->IsActive())
         {
@@ -60,7 +74,7 @@ void Billboard_Manager::Reset()
         }
     }
 
-    // Reset Effects
+    // Reset All Effects
     for (auto* effect : m_EffectPool)
     {
         if (effect->IsActive())
@@ -74,7 +88,15 @@ void Billboard_Manager::Reset()
 
 void Billboard_Manager::Update(double dt)
 {
-    for (auto* obj : m_ObjectPool)
+    // Update All Objects
+    for (auto* obj : m_EnemyPool)
+    {
+        if (obj->IsActive())
+        {
+            obj->Update(dt);
+        }
+    }
+    for (auto* obj : m_BulletPool)
     {
         if (obj->IsActive())
         {
@@ -82,6 +104,7 @@ void Billboard_Manager::Update(double dt)
         }
     }
 
+    // Update All Effects
     for (auto* effect : m_EffectPool)
     {
         if (effect->IsActive())
@@ -93,7 +116,15 @@ void Billboard_Manager::Update(double dt)
 
 void Billboard_Manager::Draw()
 {
-    for (auto* obj : m_ObjectPool)
+    // Draw All Objects
+    for (auto* obj : m_EnemyPool)
+    {
+        if (obj->IsActive())
+        {
+            obj->Draw();
+        }
+    }
+    for (auto* obj : m_BulletPool)
     {
         if (obj->IsActive())
         {
@@ -101,6 +132,7 @@ void Billboard_Manager::Draw()
         }
     }
 
+    // Draw All Effects
     for (auto* effect : m_EffectPool)
     {
         if (effect->IsActive())
@@ -110,83 +142,65 @@ void Billboard_Manager::Draw()
     }
 }
 
-void Billboard_Manager::Create(const XMFLOAT3& pos, Billboard_Type Type)
+void Billboard_Manager::Create_Enemy(const XMFLOAT3& pos)
 {
-    int texID = -1;
-    float scale = 1.0f;
-
-    switch (Type)
-    {
-    case Billboard_Type::TARGET:
-        texID = Texture_Manager::GetInstance()->GetID("Target");
-        scale = 1.0f;
-        break;
-
-    case Billboard_Type::OBJECT:
-        texID = Texture_Manager::GetInstance()->GetID("Object");
-        scale = 5.0f;
-        break;
-    }
-
-    if (texID == -1) return;
-
-    for (auto* obj : m_ObjectPool)
+    for (auto* obj : m_EnemyPool)
     {
         if (!obj->IsActive())
         {
-            // Found Inactive Object -> Reuse
-            obj->Reset_State(texID, pos, scale, scale);
+            obj->Reset_State(Billboard_Enemy::Enemy_Normal_ID, pos, 1.0f, 1.0f);
             obj->Activate(pos);
-
-            // Note : Need On Hit?
             return;
         }
     }
-
-    Debug::D_Out << "[Billboard] Object Pool Full!" << std::endl;
+	Debug::D_Out << "Enemy Pool Full!" << std::endl;
 }
 
-void Billboard_Manager::Create_Effect(const XMFLOAT3& pos, int patternID, float scale, Effect_Type Type)
+void Billboard_Manager::Create_Bullet(const DirectX::XMFLOAT3& pos)
 {
-    int finalPatternID = patternID;
+	for (auto* obj : m_BulletPool)
+	{
+		if (!obj->IsActive())
+		{
+			obj->Reset_State(Billboard_Bullet::Bullet_Normal_ID, pos, 0.5f, 0.5f);
+			obj->Activate(pos);
+			return;
+		}
+	}
+	Debug::D_Out << "Bullet Pool Full!" << std::endl;
+}
 
-    if (Type == Effect_Type::EXPLOSION && m_ExplosionPatternID != -1)
-        finalPatternID = m_ExplosionPatternID;
-
-    if (finalPatternID == -1) return;
-
+void Billboard_Manager::Create_Effect(const XMFLOAT3& pos, float scale, Effect_Type Type)
+{
     float finalScale = scale * 0.8f;
 
     for (auto* effect : m_EffectPool)
     {
         if (!effect->IsActive())
         {
-            effect->Reset(finalPatternID, pos, finalScale);
+            effect->Reset(Type, pos, finalScale);
             return;
         }
     }
-
     Debug::D_Out << "Effect Pool Full!" << std::endl;
 }
 
-Billboard_Target* Billboard_Manager::Check_Collision(const AABB& box)
+Billboard_Enemy* Billboard_Manager::Check_Enemy_Collision(const AABB& box)
 {
-    for (auto* obj : m_ObjectPool)
+    for (auto* obj : m_EnemyPool)
     {
-        if (!obj->IsActive())
-        {
-            continue;
-        }
-
-        Billboard_Target* target = dynamic_cast<Billboard_Target*>(obj);
-
-        if (target)
-        {
-            if (Collision_Is_Hit_AABB(box, target->GetAABB()).Is_Hit)
-            {
-                return target;
-            }
-        }
+        if (obj->IsActive() && Collision_Is_Hit_AABB(box, obj->GetAABB()).Is_Hit)
+            return obj;
     }
     return nullptr;
+}
+
+Billboard_Bullet* Billboard_Manager::Check_Bullet_Collision(const AABB& box)
+{
+	for (auto* obj : m_BulletPool)
+	{
+		if (obj->IsActive() && Collision_Is_Hit_AABB(box, obj->GetAABB()).Is_Hit)
+			return obj;
+	}
+	return nullptr;
 }

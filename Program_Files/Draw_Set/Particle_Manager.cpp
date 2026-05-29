@@ -12,7 +12,7 @@
 #include "Shader_Manager.h"
 #include "debug_ostream.h"
 #include "system_timer.h"
-#include "Random_Heapler_Logic.h"
+#include "Heapler_Logic.h"
 
 using namespace DirectX;
 

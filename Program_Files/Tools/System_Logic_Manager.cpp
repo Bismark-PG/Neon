@@ -42,6 +42,9 @@ void System_Manager::Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceCon
 	GUI_Init(hWnd, Device, Context);
 	Debug_Camera_Initialize();
 	Debug_Collision_Initialize(Device);
+
+	// Initialize Main Logic
+	Game_Logic_Initialize();
 }
 
 void System_Manager::Update(double elapsed_time, bool IS_Controller_Set)
@@ -64,7 +67,7 @@ void System_Manager::Update(double elapsed_time, bool IS_Controller_Set)
 	}
 
 	// Update Main Logic
-	Main_Game_Update(elapsed_time);
+	Game_Logic_Update(elapsed_time);
 }
 
 void System_Manager::Draw(double FPS)
@@ -72,12 +75,6 @@ void System_Manager::Draw(double FPS)
 	// Draw Texture
 	Direct3D_Clear();
 	Sprite_Begin();
-
-	// Real Draw Start
-	Main_Game_Draw();
-
-	// Controller Input Alert
-	Controller_Set_Draw();
 
 #if defined(DEBUG) || defined(_DEBUG)
 	// Draw GUI
@@ -87,15 +84,21 @@ void System_Manager::Draw(double FPS)
 	ImGui::NewFrame();
 	ImGui::GetIO().MouseDrawCursor = true;
 
-	// Player, Camera, Debug Collision, Animation Model
-	GUI_Model_Editor(FPS);
+	// Game Scene Editor
+	GUI_Screen_Scene_Editor(FPS);
 
-	// Light, Map System
-	GUI_World_Editor();
+	// Player, Camera Editor
+	GUI_Player_Editor();
 
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 #endif	
+
+	// Real Draw Start
+	Main_Game_Screen_Update();
+
+	// Controller Input Alert
+	Controller_Set_Draw();
 
 	// Fade Draw
 	Fade_Draw();
@@ -105,6 +108,9 @@ void System_Manager::Draw(double FPS)
 
 void System_Manager::Finalize()
 {
+	// Finalize Main Logic
+	Game_Logic_Finalize();
+
 	// Finalize Debug Tools
 	Debug_Collision_Finalize();
 	Debug_Camera_Finalize();

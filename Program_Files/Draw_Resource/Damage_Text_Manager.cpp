@@ -10,7 +10,7 @@
 #include "Texture_Manager.h"
 #include "Billboard.h"
 #include "Player_Camera.h"
-#include "Random_Heapler_Logic.h"
+#include "Heapler_Logic.h"
 #include "Shader_Manager.h"
 
 using namespace DirectX;

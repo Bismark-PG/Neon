@@ -43,10 +43,8 @@ void Effect_Finalize()
 
 }
 
-void Effect_Update(double elapsed_time)
+void Effect_Update(float elapsed_time)
 {
-	float dt = static_cast<float>(elapsed_time);
-
 	for (Effect& Eff : Effects)
 	{
 		if (!Eff.IS_Enable)	continue;

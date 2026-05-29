@@ -9,14 +9,11 @@
 #include "Light_Manager.h"
 #include "Shader_Manager.h"
 #include "Palette.h"       
-
 using namespace DirectX;
 
-bool g_IsSunRotation = false;
-float g_Sun_Angle = S_Angle, g_Sun_Tilt = S_Tlit, g_Sun_Speed = S_Speed, g_Sun_Dist = S_Dist;
-XMFLOAT3 g_Sun_Dir = S_Dir;
-XMFLOAT4 g_Sun_Color = C_Son;
-XMFLOAT4 g_Ambient_Color = C_Ambient;
+XMFLOAT3 Direction = { 0.0f, -1.0f, 0.0f };
+XMFLOAT4 Color_Direction = { 1.0f, 1.0f, 1.0f, 1.0f };
+XMFLOAT4 Color_Ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
 
 Light_Manager& Light_Manager::GetInstance()
 {
@@ -28,14 +25,9 @@ void Light_Manager::Init()
 {
     Global_Light_Reset();
 
-    // Set Ambient, Sun Light Color
-    // Default : Dark Gray ( 0.1f, 0.1f, 0.1f, 1.0f )
-    m_Ambient.Color = g_Ambient_Color;
-    m_Directional.Color = g_Sun_Color;
-
-    // Set Sun Light Direction
-	// Default : Top Down
-    Set_Directional_Light({ g_Sun_Dir.x, g_Sun_Dir.y, g_Sun_Dir.z, 0.0f }, g_Sun_Color);
+    // Set Ambient, World Light And Color
+    m_Ambient.Color = Color_Ambient;
+    m_Directional.Color = Color_Direction;
 
 	// Point Lights Initialization
     for (int i = 0; i < 4; i++)
@@ -66,22 +58,9 @@ void Light_Manager::Global_Light_Set_Up() const
     Shader_Manager::GetInstance()->SetDiffuseColor({ 1.0f, 1.0f, 1.0f, 1.0f });
 }
 
-void Light_Manager::Global_Light_Update(double elapsed_time)
+void Light_Manager::Global_Light_Update(float elapsed_time)
 {
-    float dt = static_cast<float>(elapsed_time);
-
-    if (g_IsSunRotation)
-    {
-        g_Sun_Angle += g_Sun_Speed * dt;
-
-        g_Sun_Dir.x = sinf(g_Sun_Angle);
-        g_Sun_Dir.y = -cosf(g_Sun_Angle);
-        g_Sun_Dir.z = g_Sun_Tilt;
-    }
-
-    // --- Set Global Light ---
-    Set_Directional_Light({ g_Sun_Dir.x, g_Sun_Dir.y, g_Sun_Dir.z, 0.0f }, g_Sun_Color);
-    Set_Ambient_Color(g_Ambient_Color);
+	// Point Light Update Logic (If Needed)
 }
 
 // --- Setters ---
@@ -114,26 +93,7 @@ void Light_Manager::Set_Point_Light_Active_Count(int count)
 
 void Light_Manager::Global_Light_Reset()
 {
-    g_IsSunRotation = false;
-
-    g_Sun_Angle = S_Angle;
-    g_Sun_Tilt = S_Tlit;
-
-    g_Sun_Speed = S_Speed;
-
-    g_Sun_Dist = S_Dist;
-    g_Sun_Dir = S_Dir;
-
-    g_Sun_Color = C_Son;
-
-    g_Ambient_Color = C_Ambient;
-
     // Reset
-    m_Ambient.Color = g_Ambient_Color;
-
-    XMVECTOR Dir = XMVectorSet(sinf(g_Sun_Angle), -cosf(g_Sun_Angle), g_Sun_Tilt, 0.0f);
-    Dir = XMVector3Normalize(Dir);
-    XMStoreFloat4(&m_Directional.Vector, Dir);
-
-    m_Directional.Color = g_Sun_Color;
+    m_Ambient.Color = Color_Ambient;
+    m_Directional.Color = Color_Direction;
 }

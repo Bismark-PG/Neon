@@ -10,23 +10,12 @@
 #include "Project_Header.h"
 #include "Collision.h"
 #include "Billboard_Object.h"
-#include "Billboard_Target.h"
+#include "Billboard_Player.h"
+#include "Billboard_Enemy.h"
+#include "Billboard_Bullet.h"
 #include "Billboard_Effect.h"
 
-enum class Billboard_Type
-{
-	TARGET,
-	OBJECT
-};
-
-enum class Effect_Type
-{
-	SMOKE,
-	EXPLOSION
-};
-
 class Billboard_Object;
-class Billboard_Target;
 
 class Billboard_Manager
 {
@@ -44,22 +33,28 @@ public:
     void Update(double dt);
     void Draw();
 
-    void Create(const DirectX::XMFLOAT3& pos, Billboard_Type Type);
-    void Create_Effect(const DirectX::XMFLOAT3& pos, int patternID, float scale, Effect_Type Type);
+    void Create_Enemy(const DirectX::XMFLOAT3& pos);
+    void Create_Bullet(const DirectX::XMFLOAT3& pos);
+    void Create_Effect(const DirectX::XMFLOAT3& pos, float scale, Effect_Type Type);
 
-    Billboard_Target* Check_Collision(const AABB& box);
+    Billboard_Enemy* Check_Enemy_Collision(const AABB& box);
+    Billboard_Bullet* Check_Bullet_Collision(const AABB& box);
 
 private:
     Billboard_Manager() = default;
     ~Billboard_Manager() = default;
 
-    static constexpr int MAX_OBJECT_POOL = 100;
-    std::vector<Billboard_Object*> m_ObjectPool;
-
+	// Pool for Effects (e.g., explosion, smoke)
     static constexpr int MAX_EFFECT_POOL = 200;
     std::vector<class Billboard_Effect*> m_EffectPool;
 
-    int m_ExplosionPatternID = -1;
+	// Pool for Enemy Billboards
+    static constexpr int MAX_ENEMY_POOL = 100;
+    std::vector<class Billboard_Enemy*> m_EnemyPool;
+
+	// Pool for bullets (e.g., player shots, enemy shots)
+    static constexpr int MAX_BULLET_POOL = 300;
+    std::vector<class Billboard_Bullet*> m_BulletPool;
 };
 
 #endif // BILLBOARD_MANAGER_H

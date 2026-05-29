@@ -15,7 +15,7 @@
 void GUI_Init(HWND hwnd, ID3D11Device* device, ID3D11DeviceContext* context);
 void GUI_Final();
 
-void GUI_Model_Editor(double FPS);
-void GUI_World_Editor();
+void GUI_Screen_Scene_Editor(double FPS);
+void GUI_Player_Editor();
 
 #endif // GUI_MANAGER_H
