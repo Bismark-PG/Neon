@@ -38,6 +38,9 @@ void System_Manager::Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceCon
 	Fade_Initialize();
 	Mouse_UI_set();
 
+	// Initialize Game Logic
+	Enemy_Manager::GetInstance().Init();
+
 	// Initialize Debug Tools
 	GUI_Init(hWnd, Device, Context);
 	Debug_Camera_Initialize();
@@ -54,20 +57,18 @@ void System_Manager::Update(double elapsed_time, bool IS_Controller_Set)
 	// Set Key Logger With FPS
 	KeyLogger_Update();
 	Controller_Set_Update();
+	SpriteAni_Update(elapsed_time);
+
 	IS_Controller_Set = Controller_Set_UP();
 
-	// Update Game Texture
-	if (IS_Controller_Set)
+	// When Controller Is Not Set, Update Main Logic (Player, Enemy, etc.)
+	if (!IS_Controller_Set)
 	{
-		SpriteAni_Update(elapsed_time);
+		// Update Main Logic
+		Enemy_Manager::GetInstance().Update(elapsed_time);
+		Billboard_Manager::Instance().Update(elapsed_time);
+		Game_Logic_Update(elapsed_time);
 	}
-	else if (!IS_Controller_Set)
-	{
-		SpriteAni_Update(elapsed_time);
-	}
-
-	// Update Main Logic
-	Game_Logic_Update(elapsed_time);
 }
 
 void System_Manager::Draw(double FPS)

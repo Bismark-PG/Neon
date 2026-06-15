@@ -40,6 +40,7 @@
 #include "Main_Game.h"
 #include "Main_Menu.h"
 #include "Update_Game.h"
+#include "Enemy_Manager.h"
 
 // Debug Set
 #include "debug_text.h"

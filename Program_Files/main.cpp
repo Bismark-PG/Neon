@@ -5,14 +5,14 @@
 	Project : 
 
 	Author : Choi HyungJoon
-	Date : 2026. 00. 00
+	Date : 2026. 06. 15
 	Version : Prototype
-	Note : Make Now
+	Note : 
 
 	Version List :
 
 ==============================================================================*/
-#define WIN32_LEAN_AND_MEAN
+// #define WIN32_LEAN_AND_MEAN
 #include "Project_Header.h"
 #include "System_Logic_Manager.h"
 #include "Main_Header.h"
@@ -68,9 +68,9 @@ int APIENTRY WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance,
 	System_Manager::GetInstance().Initialize(hWnd, Device, Context);
 
 	// Show Mouse (True = Show // False = Don`t Show)
-	// Mouse_SetVisible(false);
+	Mouse_SetVisible(false);
 	// Mouse Postion Mode
-	// Mouse_SetMode(MOUSE_POSITION_MODE_RELATIVE);
+	Mouse_SetMode(MOUSE_POSITION_MODE_RELATIVE);
 
 	// Show Window
 	ShowWindow(hWnd, nCmdShow);

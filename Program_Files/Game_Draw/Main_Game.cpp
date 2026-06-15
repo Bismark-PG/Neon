@@ -14,12 +14,13 @@
 #include "Player_Camera.h"
 #include "Light_Manager.h"
 #include "direct3d.h"
+#include "Enemy_Manager.h"
 
 using namespace DirectX;
 
 void Main_Game_Initialize()
 {
-    Player_Initialize({ 0.0f, 0.0f, 0.0f }, { 0.0f, 0.0f, 1.0f });
+    Player_Initialize();
     Player_Camera_Initialize();
 }
 
@@ -44,4 +45,5 @@ void Main_Game_Draw()
 
     Grid_Draw();
     Player_Draw();
+    Enemy_Manager::GetInstance().draw();
 }

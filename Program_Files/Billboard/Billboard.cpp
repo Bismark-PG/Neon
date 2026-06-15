@@ -55,7 +55,7 @@ void Billboard_Finalize()
 }
 
 void Billboard_Draw_Internal(int Tex_ID, const XMFLOAT3& POS, float Scale_X, float Scale_Y,
-	const XMFLOAT2& Pivot, const UV_Parameter& uvParam, const XMFLOAT4& Color)
+	const XMFLOAT2& Pivot, const UV_Parameter& uvParam, const XMFLOAT4& Color, Billboard_Facing facing)
 {
 	// Set UV
 	Shader_Manager::GetInstance()->SetUVParameter(uvParam);
@@ -84,20 +84,34 @@ void Billboard_Draw_Internal(int Tex_ID, const XMFLOAT3& POS, float Scale_X, flo
 	// Set Scale Matrix
 	XMMATRIX Scale = XMMatrixScaling(Scale_X, Scale_Y, 1.0f);
 
-	// Get Camera Rotation
-	XMFLOAT4X4 view4x4 = Player_Camera_Get_View_Matrix();
+	float Cam_Pitch = Get_Player_Camera_Pitch();
+	float Cam_Yaw	= Get_Player_Camera_Yaw();
+	float Cam_Roll	= Get_Player_Camera_Roll();
 
-	// Remove Translation
-	view4x4._41 = 0.0f; view4x4._42 = 0.0f; view4x4._43 = 0.0f;
+	XMMATRIX Rotation_Matrix = XMMatrixIdentity();
 
-	// Get Inverse_Matrix
-	XMMATRIX Inverse_mtx = XMMatrixTranspose(XMLoadFloat4x4(&view4x4));
+	switch (facing)
+	{
+	case Billboard_Facing::ALL_AXIS:
+		// Agree All Rotation
+		Rotation_Matrix = XMMatrixRotationRollPitchYaw(Cam_Pitch, Cam_Yaw, Cam_Roll);
+		break;
+
+	case Billboard_Facing::YAW_ROLL_ONLY:
+		// Ignore Pitch Rotation
+		Rotation_Matrix = XMMatrixRotationRollPitchYaw(0.0f, Cam_Yaw, Cam_Roll);
+		break;
+
+	case Billboard_Facing::FIXED_NONE:
+		// Do Nothing
+		break;
+	}
 
 	// Get Scale And Translation
 	XMMATRIX Trans = XMMatrixTranslation(POS.x, POS.y, POS.z);
 
 	// Get Final mtx
-	XMMATRIX mtxWorld = Pivot_Offset * Scale * Inverse_mtx * Trans;
+	XMMATRIX mtxWorld = Pivot_Offset * Scale * Rotation_Matrix * Trans;
 
 	// Set World mtx
 	Shader_Manager::GetInstance()->SetWorldMatrix3D(mtxWorld);
@@ -106,24 +120,25 @@ void Billboard_Draw_Internal(int Tex_ID, const XMFLOAT3& POS, float Scale_X, flo
 	Direct3D_GetContext()->Draw(NUM_VERTEX, 0);
 }
 
-void Billboard_Draw(int Tex_ID, const DirectX::XMFLOAT3& POS, float Scale_X, float Scale_Y,
-	const DirectX::XMFLOAT2& Pivot, const DirectX::XMFLOAT4& Color)
+void Billboard_Draw(int Tex_ID, const XMFLOAT3& POS, float Scale_X, float Scale_Y,
+	const XMFLOAT2& Pivot, const XMFLOAT4& Color, Billboard_Facing facing)
 {
 	// Set UV
 	UV_Parameter UV = {};
 	UV.scale = { 1.0f, 1.0f };
 	UV.translation = { 0.0f, 0.0f };
 
-	Billboard_Draw_Internal(Tex_ID, POS, Scale_X, Scale_Y, Pivot, UV, Color);
+	Billboard_Draw_Internal(Tex_ID, POS, Scale_X, Scale_Y, Pivot, UV, Color, facing);
 }
 
-void Billboard_Draw_Animation(int PlayID, const DirectX::XMFLOAT3& POS, float Scale_X, float Scale_Y)
+void Billboard_Draw_Animation(int PlayID, const XMFLOAT3 & POS, float Scale_X, float Scale_Y, 
+	Billboard_Facing facing)
 {
 	int texID = -1;
 	UV_Parameter UV = {};
 
 	if (SpriteAni_Get_Current_UV(PlayID, texID, UV.scale, UV.translation))
 	{
-		Billboard_Draw_Internal(texID, POS, Scale_X, Scale_Y, { 0.5f, 0.5f }, UV, White);
+		Billboard_Draw_Internal(texID, POS, Scale_X, Scale_Y, { 0.5f, 0.5f }, UV, White, facing);
 	}
 }

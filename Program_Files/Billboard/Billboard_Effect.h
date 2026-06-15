@@ -1,13 +1,13 @@
 /*==============================================================================
 
-    Managed Billboard Target Type [Billboard_Target.h]
+    Managed Billboard Target Type [Billboard_Effect.h]
 
     Author : Choi HyungJoon
 
 ==============================================================================*/
 #ifndef BILLBOARD_EFFECT_H
 #define BILLBOARD_EFFECT_H
-#include "Billboard_Object.h"
+#include "Billboard.h"
 #include "Sprite_Animation.h"
 #include "Texture_Manager.h"
 
@@ -17,103 +17,66 @@ enum class Effect_Type
     EXPLOSION
 };
 
-class Billboard_Effect : public Billboard_Object
+class Billboard_Effect
 {
 public:
-
     static int Explosion_Pattern_ID;
     static int Smoke_Pattern_ID;
 
     static void Initialize_Resource()
     {
-        int Explosion = Texture_Manager::GetInstance()->GetID("Effect_Explosion");
-        if (Explosion != -1)
-        {
-            DirectX::XMUINT2 patternSize = { 64, 64 };
-            Explosion_Pattern_ID = SpriteAni_Get_Pattern_Info(Explosion, 16, 4, 0.05, patternSize, { 0, 0 }, false);
-        }
+        int exID = Texture_Manager::GetInstance()->GetID("Effect_Explosion");
+        if (exID != -1) 
+            Explosion_Pattern_ID = SpriteAni_Get_Pattern_Info(exID, 16, 4, 0.05, { 64, 64 }, { 0, 0 }, false);
 
-        int Smoke = Texture_Manager::GetInstance()->GetID("Effect_Smoke");
-        if (Smoke != -1)
-        {
-            DirectX::XMUINT2 patternSize = { 64, 64 };
-            Smoke_Pattern_ID = SpriteAni_Get_Pattern_Info(Smoke, 16, 4, 0.05, patternSize, { 0, 0 }, false);
-        }
+        //int smID = Texture_Manager::GetInstance()->GetID("Effect_Smoke");
+        //if (smID != -1) 
+        //    Smoke_Pattern_ID = SpriteAni_Get_Pattern_Info(smID, 16, 4, 0.05, { 64, 64 }, { 0, 0 }, false);
     }
 
-    Billboard_Effect()
-        : Billboard_Object(-1, { 0,0,0 }, 1.0f, 1.0f)
-    {
-        m_IsActive = false;
-        m_PlayID = -1;
-    }
+    Billboard_Effect() : m_IsActive(false), m_PlayID(-1), m_Scale(1.0f) {}
+    ~Billboard_Effect() { if (m_PlayID != -1) SpriteAni_DestroyPlayer(m_PlayID); }
 
-    virtual ~Billboard_Effect()
-    {
-        if (m_PlayID != -1)
-        {
-            SpriteAni_DestroyPlayer(m_PlayID);
-        }
-    }
+    bool IsActive() const { return m_IsActive; }
+    void Deactivate() { m_IsActive = false; }
 
     void Reset(Effect_Type type, const DirectX::XMFLOAT3& pos, float scale)
     {
-        int patternID = -1;
-        switch (type)
-        {
-        case Effect_Type::SMOKE:
-            patternID = Explosion_Pattern_ID;
-            break;
-        case Effect_Type::EXPLOSION:
-            patternID = Smoke_Pattern_ID;
-            break;
-        }
-
+        int patternID = (type == Effect_Type::EXPLOSION) ? Explosion_Pattern_ID : Smoke_Pattern_ID;
         if (patternID == -1) return;
 
         m_Position = pos;
-        m_ScaleX = scale;
-        m_ScaleY = scale;
+        m_Scale = scale;
 
         if (m_PlayID != -1) SpriteAni_DestroyPlayer(m_PlayID);
+
         m_PlayID = SpriteAni_CreatePlayer(patternID);
-        Activate(pos);
+        m_IsActive = true;
     }
 
-    virtual void Update(double elapsed_time) override
+    void Update(double elapsed_time)
     {
-        // float dt = static_cast<float>(elapsed_time);
-
         if (!m_IsActive) return;
 
-        if (m_PlayID != -1)
+        if (m_PlayID != -1 && SpriteAni_IsStopped(m_PlayID))
         {
-            if (SpriteAni_IsStopped(m_PlayID))
-            {
-                SpriteAni_DestroyPlayer(m_PlayID);
-                m_PlayID = -1;
-                Deactivate();
-            }
+            SpriteAni_DestroyPlayer(m_PlayID);
+            m_PlayID = -1;
+            Deactivate();
         }
     }
 
-    virtual void Draw() override
+    void Draw()
     {
-        if (!m_IsActive || m_PlayID == -1)
-        {
-            return;
-        }
-
-        if (SpriteAni_IsStopped(m_PlayID))
-        {
-            return;
-        }
-
-        Billboard_Draw_Animation(m_PlayID, m_Position, m_ScaleX, m_ScaleY);
+        if (!m_IsActive || m_PlayID == -1 || SpriteAni_IsStopped(m_PlayID)) return;
+        Billboard_Draw_Animation(m_PlayID, m_Position, m_Scale, m_Scale);
     }
 
 private:
-    int m_PlayID = -1;
+    bool m_IsActive;
+    int m_PlayID;
+    DirectX::XMFLOAT3 m_Position = { 0, 0, 0 };
+    float m_Scale;
 };
 
 #endif // BILLBOARD_EFFECT_H

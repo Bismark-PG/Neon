@@ -61,6 +61,8 @@ void Mouse_Initialize(HWND window)
     gRelativeY = INT32_MAX;
 
     gInFocus = true;
+
+    Mouse_UI_set();
 }
 
 void Mouse_Finalize(void)

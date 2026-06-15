@@ -36,9 +36,15 @@ void Game_Texture_Load()
     Texture_M->Load("K", L"Resource/Texture/BG/RGBCMYK/Black.png");
 
     //-------------------------------------------<< In Game Texture >>-------------------------------------------//
+    //---------------------In Game : Player Texture---------------------//
     Texture_M->Load("Player", L"Resource/Texture/Other/OBJ.png");
    
+    //---------------------In Game : Enemy Texture---------------------//
+    Texture_M->Load("Enemy", L"Resource/Texture/Other/HP.png");
 
+    //---------------------In Game : Effect Texture---------------------//
+    Texture_M->Load("Effect_Explosion", L"Resource/Texture/Animation/Explosion.png");
+    
     //---------------------------------------------<< Card Texture >>---------------------------------------------//
 
     
@@ -51,6 +57,9 @@ void Game_Texture_Load()
     Texture_M->Load("Settings", L"Resource/Texture/UI/Menu_Settings.png");
     Texture_M->Load("Exit", L"Resource/Texture/UI/Menu_Exit.png");
     Texture_M->Load("UI_Back", L"Resource/Texture/UI/Menu_Back.png");
+
+    //---------------------UI : Mouse UI Texture---------------------//
+    Texture_M->Load("UI_Mouse_Cursor", L"Resource/Texture/UI/Aim.png");
 
     //-------------------------------------------------Others Texture-------------------------------------------------//
     Texture_M->Load("Bismark_LOGO", L"Resource/Texture/Other/Bismark.jpg");

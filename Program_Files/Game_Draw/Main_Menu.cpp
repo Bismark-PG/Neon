@@ -228,6 +228,8 @@ void Main_Menu_Draw()
 
 	Main_Menu_BG_Draw();
 	Main_Menu_UI_Draw();
+
+	Mouse_UI_Draw(Get_Main_Menu_Mouse_POS());
 }
 
 void Main_Menu_BG_Draw()
