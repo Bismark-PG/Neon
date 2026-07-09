@@ -57,22 +57,22 @@ void GUI_Screen_Scene_Editor(double FPS)
         const char* Game_Select_Names[] = { "G_WAIT", "GAME_MENU_SELECT", "GAME_PLAYING", "GAME_IN_GAME_MENU", "GAME_SETTING", "G_DONE" };
         const char* Main_Buffer_Names[] = { "None", "Wait", "Start", "Setting", "Exit", "Done" };
 
-        int Current_Main = static_cast<int>(Game_Manager::GetInstance()->Get_Current_Main_Screen());
+        int Current_Main = static_cast<int>(Game_Screen_Manager::GetInstance()->Get_Current_Main_Screen());
         if (ImGui::Combo("Main Screen", &Current_Main, Main_Screen_Names, IM_ARRAYSIZE(Main_Screen_Names)))
         {
-            Game_Manager::GetInstance()->Update_Main_Screen(static_cast<Main_Screen>(Current_Main));
+            Game_Screen_Manager::GetInstance()->Update_Main_Screen(static_cast<Main_Screen>(Current_Main));
         }
 
-        int Current_Sub = static_cast<int>(Game_Manager::GetInstance()->Get_Current_Sub_Screen());
+        int Current_Sub = static_cast<int>(Game_Screen_Manager::GetInstance()->Get_Current_Sub_Screen());
         if (ImGui::Combo("Sub Screen", &Current_Sub, Sub_Screen_Names, IM_ARRAYSIZE(Sub_Screen_Names)))
         {
-            Game_Manager::GetInstance()->Update_Sub_Screen(static_cast<Sub_Screen>(Current_Sub));
+            Game_Screen_Manager::GetInstance()->Update_Sub_Screen(static_cast<Sub_Screen>(Current_Sub));
         }
 
-        int Current_Game = static_cast<int>(Game_Manager::GetInstance()->Get_Current_Game_Select_Screen());
+        int Current_Game = static_cast<int>(Game_Screen_Manager::GetInstance()->Get_Current_Game_Select_Screen());
         if (ImGui::Combo("Game Screen", &Current_Game, Game_Select_Names, IM_ARRAYSIZE(Game_Select_Names)))
         {
-            Game_Manager::GetInstance()->Update_Game_Select_Screen(static_cast<Game_Select_Screen>(Current_Game));
+            Game_Screen_Manager::GetInstance()->Update_Game_Select_Screen(static_cast<Game_Select_Screen>(Current_Game));
         }
 
         ImGui::Separator();

@@ -82,7 +82,7 @@ void Enemy::OnHit()
 	// Audio_Manager::GetInstance()->Play_SFX("Enemy_Dead");
 
 	float effectScale = m_Info.Scale * 0.6f;
-	Billboard_Manager::Instance().Create_Effect(Position, effectScale, Effect_Type::EXPLOSION);
+	Billboard_Manager::GetInstance().Create_Effect(Position, effectScale, Effect_Type::EXPLOSION);
 
 	Drop_Reward();
 	Deactivate();

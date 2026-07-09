@@ -49,9 +49,28 @@ void Game_Texture_Load()
 
     
     //----------------------------------------------<< BG Texture >>----------------------------------------------//
-
+    Texture_M->Load("BG_F", L"Resource/Texture/BG/BG_Floor.png");
+    Texture_M->Load("BG_S", L"Resource/Texture/BG/BG_Sky.png");
 
     //----------------------------------------------<< UI Texture >>----------------------------------------------//
+    //---------------------UI : Title Texture---------------------//
+    Texture_M->Load("Title_Bracket", L"Resource/Texture/UI/Intro/Title_Bracket.png");
+    Texture_M->Load("Title_Bracket_RGB", L"Resource/Texture/UI/Intro/Title_Bracket_Alpha.png");
+
+    //---------------------UI : Title Logo Texture---------------------//
+    Texture_M->Load("Intro_Logo", L"Resource/Texture/UI/Intro/Title_Logo.png");
+    Texture_M->Load("Intro_Made_By", L"Resource/Texture/UI/Intro/Title_MadeBy.png");
+    Texture_M->Load("Intro_Corporation", L"Resource/Texture/UI/Intro/Title_Corporation.png");
+    Texture_M->Load("Intro_Name", L"Resource/Texture/UI/Intro/Title_Name.png");
+
+    //---------------------UI : Title Intro Texture---------------------//
+    Texture_M->Load("Intro_SystemOS", L"Resource/Texture/UI/Intro/Title_System.png");
+    Texture_M->Load("Intro_DtatInit", L"Resource/Texture/UI/Intro/Title_Data.png");
+    Texture_M->Load("Intro_Ready", L"Resource/Texture/UI/Intro/Title_Ready.png");
+    Texture_M->Load("Intro_Oper", L"Resource/Texture/UI/Intro/Title_Operation_Alpha.png");
+    Texture_M->Load("Intro_Nova", L"Resource/Texture/UI/Intro/Title_Nova_Alpha.png");
+    Texture_M->Load("Intro_Flare", L"Resource/Texture/UI/Intro/Title_Flare_Anim.png");
+    
     //---------------------UI : Main Menu Texture---------------------//
     Texture_M->Load("Start", L"Resource/Texture/UI/Menu_Start.png");
     Texture_M->Load("Settings", L"Resource/Texture/UI/Menu_Settings.png");

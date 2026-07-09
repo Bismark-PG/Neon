@@ -31,8 +31,9 @@ void System_Manager::Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceCon
 	Game_Texture_Initialize();
 	Sprite_Initialize(Device, Context);
 	SpriteAni_Initialize();
-	Billboard_Initialize();
-	Billboard_Manager::Instance().Init();
+	Billboard_Manager::GetInstance().Init();
+	Particle_Manager::GetInstance().Init();
+	Map_Manager::GetInstance().Init();
 
 	// Initialize Game Setting Tools
 	Fade_Initialize();
@@ -40,13 +41,14 @@ void System_Manager::Initialize(HWND hWnd, ID3D11Device* Device, ID3D11DeviceCon
 
 	// Initialize Game Logic
 	Enemy_Manager::GetInstance().Init();
+	Bullet_Manager::GetInstance().Init();
 
 	// Initialize Debug Tools
 	GUI_Init(hWnd, Device, Context);
 	Debug_Camera_Initialize();
 	Debug_Collision_Initialize(Device);
 
-	// Initialize Main Logic
+	// Initialize Game Screen Logic
 	Game_Logic_Initialize();
 }
 
@@ -65,8 +67,6 @@ void System_Manager::Update(double elapsed_time, bool IS_Controller_Set)
 	if (!IS_Controller_Set)
 	{
 		// Update Main Logic
-		Enemy_Manager::GetInstance().Update(elapsed_time);
-		Billboard_Manager::Instance().Update(elapsed_time);
 		Game_Logic_Update(elapsed_time);
 	}
 }
@@ -76,6 +76,15 @@ void System_Manager::Draw(double FPS)
 	// Draw Texture
 	Direct3D_Clear();
 	Sprite_Begin();
+
+	// Real Draw Start
+	Main_Game_Screen_Update();
+
+	// Controller Input Alert
+	Controller_Set_Draw();
+
+	// Fade Draw
+	Fade_Draw();
 
 #if defined(DEBUG) || defined(_DEBUG)
 	// Draw GUI
@@ -95,15 +104,6 @@ void System_Manager::Draw(double FPS)
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 #endif	
 
-	// Real Draw Start
-	Main_Game_Screen_Update();
-
-	// Controller Input Alert
-	Controller_Set_Draw();
-
-	// Fade Draw
-	Fade_Draw();
-
 	Direct3D_Present();
 }
 
@@ -117,12 +117,17 @@ void System_Manager::Finalize()
 	Debug_Camera_Finalize();
 	GUI_Final();
 
+	// Initialize Game Logic
+	Bullet_Manager::GetInstance().Final();
+	Enemy_Manager::GetInstance().Final();
+
 	// Finalize Game Setting Tools
 	Fade_Finalize();
 
 	// Finalize Texture Tools
-	Billboard_Finalize();
-	Billboard_Manager::Instance().Final();
+	Map_Manager::GetInstance().Final();
+	Particle_Manager::GetInstance().Final();
+	Billboard_Manager::GetInstance().Final();
 	SpriteAni_Finalize();
 	Sprite_Finalize();
 	Game_Texture_Finalize();

@@ -20,11 +20,6 @@ enum class Main_Select_Buffer
 	Done
 };
 
-struct Button_RECT
-{
-	float x, y, w, h;
-};
-
 void Main_Menu_Initialize();
 void Main_Menu_Finalize();
 

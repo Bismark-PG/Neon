@@ -420,7 +420,8 @@ void Mouse_UI_set()
 
     if (Mouse_UI_Tex == -1)
     {
-        Debug::D_Out << "[Main Menu] Texture Init Error" << std::endl;
+        Debug::D_Out << "[Mouse UI] Texture Init Error" << std::endl;
+        Debug::D_Out << "Mouse_UI_Tex : " << Mouse_UI_Tex << std::endl;
     }
 }
 

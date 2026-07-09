@@ -13,6 +13,7 @@
 #include "Enemy_Manager.h"
 #include "Bullet_Manager.h"
 #include "Heapler_Logic.h"
+#include "Enemy_Spawner.h"
 
 using namespace DirectX;
 
@@ -85,10 +86,34 @@ void Weapon_Manager::Missile_Fire(float Damage)
 			float Random_Y = RandomFloatRange(Random_Y_Range_MIN, Random_Y_Range_MAX);
 			XMFLOAT3 Start_Dir = { Random_X, Random_Y, Missile_Z_Start_POS };
 
-			Bullet_Manager::Instance().Fire_Missile(Player_Get_POS(), Start_Dir, Damage * 3, L.Target_Ptr);
+			Bullet_Manager::GetInstance().Fire_Missile(Player_Get_POS(), Start_Dir, Damage * 3, L.Target_Ptr);
 		}
 		// End Shoot, Clear List
 		Locked_Targets.clear();
+		Player_Fire_Interval(1.0f);	// Shoot For 1/Sec
+	}
+	else
+	{
+		// Shoot Ray In Aim POS
+		XMFLOAT3 Cam_POS = Player_Camera_Get_POS();
+		XMVECTOR V_Cam = XMLoadFloat3(&Cam_POS);
+		XMVECTOR V_Aim = XMLoadFloat3(&Player_Get_Aim_POS());
+		XMVECTOR V_Player = XMLoadFloat3(&Player_Get_POS());
+
+		XMVECTOR V_Cam_To_Aim = XMVector3Normalize(V_Aim - V_Cam);
+
+		float Target_Z = Enemy_Spawner::GetInstance().Get_Z_Depth();// Enemy Spawn Z
+		float Dir_Z = XMVectorGetZ(V_Cam_To_Aim);
+		if (abs(Dir_Z) < 0.0001f) Dir_Z = 0.0001f; // Safety Code For Division 0
+
+		float Hit_Target = (Target_Z - Cam_POS.z) / Dir_Z;
+		XMVECTOR V_Target3D = V_Cam + V_Cam_To_Aim * Hit_Target;
+
+		XMVECTOR V_Dir = XMVector3Normalize(V_Target3D - V_Player);
+		XMFLOAT3 Dir;
+		XMStoreFloat3(&Dir, V_Dir);
+
+		Bullet_Manager::GetInstance().Fire_Missile(Player_Get_POS(), Dir, Damage * 3, nullptr);
 		Player_Fire_Interval(1.0f);	// Shoot For 1/Sec
 	}
 }
@@ -96,12 +121,24 @@ void Weapon_Manager::Missile_Fire(float Damage)
 void Weapon_Manager::Machine_Gun_Fire(XMVECTOR V_Player, float Damage)
 {
 	// Shoot Ray In Aim POS
+	XMFLOAT3 Cam_POS = Player_Camera_Get_POS();
+	XMVECTOR V_Cam = XMLoadFloat3(&Cam_POS);
 	XMVECTOR V_Aim = XMLoadFloat3(&Player_Get_Aim_POS());
-	XMVECTOR V_Dir = XMVector3Normalize(V_Aim - V_Player);
+
+	XMVECTOR V_Cam_To_Aim = XMVector3Normalize(V_Aim - V_Cam);
+
+	float Target_Z = Enemy_Spawner::GetInstance().Get_Z_Depth();// Enemy Spawn Z
+	float Dir_Z = XMVectorGetZ(V_Cam_To_Aim);
+	if (abs(Dir_Z) < 0.0001f) Dir_Z = 0.0001f; // Safety Code For Division 0
+
+	float Hit_Target = (Target_Z - Cam_POS.z) / Dir_Z;
+	XMVECTOR V_Target3D = V_Cam + V_Cam_To_Aim * Hit_Target;
+
+	XMVECTOR V_Dir = XMVector3Normalize(V_Target3D - V_Player);
 	XMFLOAT3 Dir;
 	XMStoreFloat3(&Dir, V_Dir);
 
-	Bullet_Manager::Instance().Fire_Ray(Player_Get_POS(), Dir, Damage);
+	Bullet_Manager::GetInstance().Fire_Ray(Player_Get_POS(), Dir, Damage);
 	Player_Fire_Interval(0.25f); // Shoot For 4/Sec
 }
 

@@ -29,24 +29,13 @@ struct Vertex_Billboard
 
 void Billboard_Initialize()
 {
-	static Vertex_Billboard Billboard[]
-	{
-		{{ 0.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 0.0f}}, // 0 : LU
-		{{ 1.0f, 1.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 0.0f}}, // 1 : RU
-		{{ 0.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {0.0f, 1.0f}}, // 2 : LD
-		{{ 1.0f, 0.0f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}  // 3 : RD
-	};
-
 	D3D11_BUFFER_DESC bd = {};
-	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.Usage = D3D11_USAGE_DYNAMIC;
 	bd.ByteWidth = sizeof(Vertex_Billboard) * NUM_VERTEX;
 	bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bd.CPUAccessFlags = 0;
+	bd.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 
-	D3D11_SUBRESOURCE_DATA sd{};
-	sd.pSysMem = Billboard;
-
-	Direct3D_GetDevice()->CreateBuffer(&bd, &sd, Vertex_Buffer.GetAddressOf());
+	Direct3D_GetDevice()->CreateBuffer(&bd, nullptr, Vertex_Buffer.GetAddressOf());
 }
 
 void Billboard_Finalize()
@@ -57,6 +46,18 @@ void Billboard_Finalize()
 void Billboard_Draw_Internal(int Tex_ID, const XMFLOAT3& POS, float Scale_X, float Scale_Y,
 	const XMFLOAT2& Pivot, const UV_Parameter& uvParam, const XMFLOAT4& Color, Billboard_Facing facing)
 {
+	// Set Billboard Color
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	if (SUCCEEDED(Direct3D_GetContext()->Map(Vertex_Buffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource)))
+	{
+		Vertex_Billboard* v = (Vertex_Billboard*)mappedResource.pData;
+		v[0] = { { 0.0f, 1.0f, 0.0f }, Color, { 0.0f, 0.0f } }; // LU
+		v[1] = { { 1.0f, 1.0f, 0.0f }, Color, { 1.0f, 0.0f } }; // RU
+		v[2] = { { 0.0f, 0.0f, 0.0f }, Color, { 0.0f, 1.0f } }; // LD
+		v[3] = { { 1.0f, 0.0f, 0.0f }, Color, { 1.0f, 1.0f } }; // RD
+		Direct3D_GetContext()->Unmap(Vertex_Buffer.Get(), 0);
+	}
+
 	// Set UV
 	Shader_Manager::GetInstance()->SetUVParameter(uvParam);
 	Shader_Manager::GetInstance()->Begin_Billboard();
@@ -100,6 +101,10 @@ void Billboard_Draw_Internal(int Tex_ID, const XMFLOAT3& POS, float Scale_X, flo
 	case Billboard_Facing::YAW_ROLL_ONLY:
 		// Ignore Pitch Rotation
 		Rotation_Matrix = XMMatrixRotationRollPitchYaw(0.0f, Cam_Yaw, Cam_Roll);
+		break;
+
+	case Billboard_Facing::FLOOR:
+		Rotation_Matrix = XMMatrixRotationX(XMConvertToRadians(90.0f));
 		break;
 
 	case Billboard_Facing::FIXED_NONE:

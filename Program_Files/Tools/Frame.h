@@ -6,7 +6,7 @@
 
 ==============================================================================*/
 
-enum Frame_Rate : int
+enum class Frame_Rate
 {
 	Frame_Rate_None = 0,
 	One_Sec		    = 60,
@@ -14,6 +14,7 @@ enum Frame_Rate : int
 	Third_Sec		= 20,
 	Quarter_Sec		= 15,
 	Sixth_Sec		= 10,
+	Point_One_Sec	= 6,
 	Half_Sixth_Sec	= 5,
 	Three_Frame		= 3,
 	Two_Frame		= 2,

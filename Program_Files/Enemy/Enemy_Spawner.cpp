@@ -16,7 +16,6 @@
 #include "Palette.h"
 using namespace DirectX;
 using namespace PALETTE;
-static float SPAWN_Z_DEPTH = 150.0f;
 
 void Enemy_Spawner::Init()
 {
@@ -32,7 +31,12 @@ void Enemy_Spawner::Reset()
 
 void Enemy_Spawner::Set_Z_Depth(float depth)
 {
-    SPAWN_Z_DEPTH = depth;
+    m_Spawn_Base_Z = depth;
+}
+
+float Enemy_Spawner::Get_Z_Depth() const
+{
+    return m_Spawn_Base_Z;
 }
 
 void Enemy_Spawner::Update(float dt)
@@ -61,9 +65,12 @@ void Enemy_Spawner::Update(float dt)
     }
 }
 
-XMFLOAT3 Enemy_Spawner::Get_Spawn_Position(EnemyType type, float ratio_X, int batchIndex)
+XMFLOAT3 Enemy_Spawner::Get_Spawn_Position(EnemyType type, float ratio_X, int batchIndex) const
 {
-	// 1. Get X Axis : Range Is Based On World_Limit_X, But Can Be Adjusted By Ratio_X (0.0 ~ 1.0)
+    // 1. Get Enemy Type Info
+    const Enemy_Info& Info = Get_Enemy_Info(type);
+
+	// 2. Get X Axis : Range Is Based On World_Limit_X, But Can Be Adjusted By Ratio_X (0.0 ~ 1.0)
     float limitX = Get_Player_Limit_X();
     float minX = -limitX;
     float maxX = limitX;
@@ -74,19 +81,12 @@ XMFLOAT3 Enemy_Spawner::Get_Spawn_Position(EnemyType type, float ratio_X, int ba
     // Add Spacing For Each Batch
     spawnX += (batchIndex * 2.5f);  // 2.5f Is An Arbitrary Walue, Can Be Adjusted
 
-	// 2. Get Y Axis: Dynamically Assign Height Based On Separated World_Limit_Y For Each Type
-    float limitY_Min = Get_Player_Limit_Y_Min();
+	// 3. Get Y Axis : Get Y Ratio Each Enemy Type
     float limitY_Max = A_Half * Get_Player_Limit_Y_Max();
-    float spawnY = 0.0f;
+    float spawnY = limitY_Max * Info.Spawn_Y_Ratio;
 
-    switch (type)
-    {
-    case EnemyType::ENEMY_NORMAL:
-        spawnY = limitY_Max * A_F_Fifths;
-        break;
-    }
-
-    float spawnZ = SPAWN_Z_DEPTH;
+	// 4. Get Z Axis : Get Z Ratio Each Enemy Type
+    float spawnZ = m_Spawn_Base_Z * Info.Spawn_Z_Ratio;
 
     return XMFLOAT3(spawnX, spawnY, spawnZ);
 }

@@ -10,20 +10,23 @@
 #include "debug_ostream.h"
 #include "System_Timer.h"
 #include "mouse.h"
+#include "KeyLogger.h"
 #include "Main_Game.h"
 #include "Main_Menu.h"
-#include "KeyLogger.h"
+#include "Title.h"
 
 void Game_Logic_Initialize()
 {
-	Main_Game_Initialize();
+	Main_Game_Manager::GetIntance()->In_Game_Initialize();
+	Title_Initialize();
 	Main_Menu_Initialize();
 }
 
 void Game_Logic_Finalize()
 {
 	Main_Menu_Finalize();
-	Main_Game_Finalize();
+	Title_Finalize();
+	Main_Game_Manager::GetIntance()->In_Game_Finalize();
 }
 void Game_Logic_Update(double elapsed_time)
 {
@@ -31,17 +34,17 @@ void Game_Logic_Update(double elapsed_time)
 
 	if (KeyLogger_IsTrigger(KK_ESCAPE))
 	{
-		Game_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MAIN);
-		Game_Manager::GetInstance()->Update_Game_Select_Screen(Game_Select_Screen::G_WAIT);
+		Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MAIN);
+		Game_Screen_Manager::GetInstance()->Update_Game_Select_Screen(Game_Select_Screen::G_WAIT);
 		Set_Main_Menu_Buffer(Main_Select_Buffer::None);
 		Mouse_SetMode(MOUSE_POSITION_MODE_ABSOLUTE);  
 	}
 
-	Game_Manager::GetInstance()->Apply_Screen_Changes();
+	Game_Screen_Manager::GetInstance()->Apply_Screen_Changes();
 
-	Main_Screen M_State = Game_Manager::GetInstance()->Get_Current_Main_Screen();
-	Sub_Screen S_State = Game_Manager::GetInstance()->Get_Current_Sub_Screen();
-	Game_Select_Screen G_State = Game_Manager::GetInstance()->Get_Current_Game_Select_Screen();
+	Main_Screen M_State = Game_Screen_Manager::GetInstance()->Get_Current_Main_Screen();
+	Sub_Screen S_State = Game_Screen_Manager::GetInstance()->Get_Current_Sub_Screen();
+	Game_Select_Screen G_State = Game_Screen_Manager::GetInstance()->Get_Current_Game_Select_Screen();
 
 	Game_Logic_Menu(M_State, dt);
 	Game_Logic_Sub(S_State, dt);
@@ -54,11 +57,11 @@ void Game_Logic_Menu(Main_Screen State, float elapsed_time)
 	{
 	case Main_Screen::M_WAIT:
 	case Main_Screen::MAIN:
-		Main_Menu_Update(elapsed_time);
+		Title_Update(elapsed_time);
 		break;
 
 	case Main_Screen::MENU_SELECT:
-
+		Main_Menu_Update(elapsed_time);
 		break;
 
 	case Main_Screen::SELECT_SETTINGS:
@@ -73,10 +76,12 @@ void Game_Logic_Sub(Sub_Screen State, float elapsed_time)
 	switch (State)
 	{
 	case Sub_Screen::S_WAIT:
-	case Sub_Screen::S_DONE:
 		break;
 
 	case Sub_Screen::SETTINGS:
+		break;
+
+	case Sub_Screen::S_DONE:
 		break;
 	}
 }
@@ -86,11 +91,10 @@ void Game_Logic_InGame(Game_Select_Screen State, float elapsed_time)
 	switch (State)
 	{
 	case Game_Select_Screen::G_WAIT:
-	case Game_Select_Screen::G_DONE:
 		break;
 
 	case Game_Select_Screen::GAME_MENU_SELECT:
-		Main_Game_Update(elapsed_time);
+		Main_Game_Manager::GetIntance()->In_Game_Update(elapsed_time);
 		break;
 
 	case Game_Select_Screen::GAME_PLAYING:
@@ -101,25 +105,29 @@ void Game_Logic_InGame(Game_Select_Screen State, float elapsed_time)
 
 	case Game_Select_Screen::GAME_SETTING:
 		break;
+
+	case Game_Select_Screen::G_DONE:
+		break;
 	}
 }
 
 void Main_Game_Screen_Update()
 {
-	Main_Screen current_screen = Game_Manager::GetInstance()->Get_Current_Main_Screen();
+	Main_Screen current_screen = Game_Screen_Manager::GetInstance()->Get_Current_Main_Screen();
 
 	switch (current_screen)
 	{
 	case Main_Screen::M_WAIT:
 		Mouse_SetMode(MOUSE_POSITION_MODE_ABSOLUTE);
-		Game_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MAIN);
+		Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MAIN);
 		break;
 
 	case Main_Screen::MAIN:
-		Main_Menu_Draw();
+		Title_Draw();
 		break;
 
 	case Main_Screen::MENU_SELECT:
+		Main_Menu_Draw();
 		break;
 
 	case Main_Screen::SELECT_GAME:
@@ -131,7 +139,7 @@ void Main_Game_Screen_Update()
 		break;
 
 	case Main_Screen::EXIT:
-		Game_Manager::GetInstance()->Update_Main_Screen(Main_Screen::M_DONE);
+		Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::M_DONE);
 		Main_Menu_Draw();
 		Debug::D_Out << "Exiting Game..." << std::endl;
 		break;
@@ -145,7 +153,7 @@ void Main_Game_Screen_Update()
 
 void Sub_Game_Screen_Update()
 {
-	Sub_Screen current_screen = Game_Manager::GetInstance()->Get_Current_Sub_Screen();
+	Sub_Screen current_screen = Game_Screen_Manager::GetInstance()->Get_Current_Sub_Screen();
 
 	switch (current_screen)
 	{
@@ -156,15 +164,15 @@ void Sub_Game_Screen_Update()
 		break;
 
 	case Sub_Screen::S_DONE:
-		Game_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MENU_SELECT);
-		Game_Manager::GetInstance()->Update_Sub_Screen(Sub_Screen::S_WAIT);
+		Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MENU_SELECT);
+		Game_Screen_Manager::GetInstance()->Update_Sub_Screen(Sub_Screen::S_WAIT);
 		break;
 	}
 }
 
 void Game_Select_Screen_Update()
 {
-	Game_Select_Screen current_screen = Game_Manager::GetInstance()->Get_Current_Game_Select_Screen();
+	Game_Select_Screen current_screen = Game_Screen_Manager::GetInstance()->Get_Current_Game_Select_Screen();
 
 	switch (current_screen)
 	{
@@ -172,7 +180,7 @@ void Game_Select_Screen_Update()
 		break;
 
 	case Game_Select_Screen::GAME_MENU_SELECT:
-		Main_Game_Draw();
+		Main_Game_Manager::GetIntance()->In_Game_Draw();
 		break;
 
 	case Game_Select_Screen::GAME_PLAYING:
@@ -185,8 +193,8 @@ void Game_Select_Screen_Update()
 		break;
 
 	case Game_Select_Screen::G_DONE:
-		Game_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MENU_SELECT);
-		Game_Manager::GetInstance()->Update_Game_Select_Screen(Game_Select_Screen::G_WAIT);
+		Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MENU_SELECT);
+		Game_Screen_Manager::GetInstance()->Update_Game_Select_Screen(Game_Select_Screen::G_WAIT);
 		break;
 	}
 }

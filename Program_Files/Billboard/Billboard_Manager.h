@@ -15,7 +15,7 @@
 class Billboard_Manager
 {
 public:
-    static Billboard_Manager& Instance()
+    static Billboard_Manager& GetInstance()
     {
         static Billboard_Manager instance;
         return instance;

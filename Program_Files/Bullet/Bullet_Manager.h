@@ -14,7 +14,7 @@
 class Bullet_Manager
 {
 public:
-    static Bullet_Manager& Instance()
+    static Bullet_Manager& GetInstance()
     {
         static Bullet_Manager instance;
         return instance;
@@ -37,6 +37,7 @@ private:
     Bullet_Manager& operator=(const Bullet_Manager&) = delete;
 
     static constexpr int MAX_RAY_POOL = 100;
+    static constexpr int MAX_MISSILE_POOL = 50;
 
     std::vector<Bullet*> m_Ray_Pool;
     std::vector<Bullet*> m_Missile_Pool;

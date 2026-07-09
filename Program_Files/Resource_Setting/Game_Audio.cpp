@@ -43,8 +43,10 @@ void Game_Audio_BGM()
 
 void Game_Audio_SFX()
 {
-	//--------------------------------Logo SFX--------------------------------//
-	Sound_M->Load_SFX("Logo_Draw", "Resource/SFX/Logo_Draw_Fixed.wav");
+	//--------------------------------Intro SFX--------------------------------//
+	Sound_M->Load_SFX("Intro_Loading", "Resource/SFX/Intro_Start.wav");
+	Sound_M->Load_SFX("Intro_Glitch_Sound", "Resource/SFX/Intro_Glitch.wav");
+	Sound_M->Load_SFX("Intro_Flare", "Resource/SFX/Intro_Flare.wav");
 
 	//-------------------------------Buffer SFX-------------------------------//
 

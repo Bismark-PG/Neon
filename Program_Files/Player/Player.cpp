@@ -134,7 +134,7 @@ void Player_Draw()
 
 		XMFLOAT4 Aim_Color = (Current_Weapon == WeaponType::MACHINE_GUN) ?
 			XMFLOAT4(1.0f, 1.0f, 0.0f, 0.5f) : XMFLOAT4(0.0f, 0.5f, 1.0f, 0.5f);
-		Billboard_Draw(Player_TexID, Aim_Pos, 0.5f, 0.5f, { 0.5f, 0.5f }, Aim_Color);
+		Billboard_Draw(Player_TexID, Aim_Pos, 0.25f, 0.25f, { 0.5f, 0.5f }, Aim_Color);
 
 		for (const LockOn_Data& L : Weapon_Manager::GetInstance().Return_Lock_On_List())
 		{
@@ -165,6 +165,11 @@ void Player_Fire_Interval(float Interval)
 	Fire_Cooldown = Interval;
 }
 
+void Player_Set_Weapon_Mode(WeaponType Type)
+{
+	Current_Weapon = Type;
+}
+
 // ----------------------------------------------------------------------------------------------------------------
 //											    Player Parameter Geter 
 // ----------------------------------------------------------------------------------------------------------------
@@ -188,14 +193,20 @@ float Player_Get_MaxHP()
 	return Player_MaxHP;
 }
 
-void GUI_Set_Player_POS(float x, float y, float z)
+WeaponType Player_Get_Weapon_Mode()
 {
-	Player_Pos = { x, y, z };
+	return Current_Weapon;
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 //								        		 Player Debug Logic
 // ----------------------------------------------------------------------------------------------------------------
+
+void GUI_Set_Player_POS(float x, float y, float z)
+{
+	Player_Pos = { x, y, z };
+}
+
 void GUI_Set_Player_Health(float hp, float max)
 {
 	Player_HP = hp;
@@ -207,7 +218,6 @@ void GUI_Set_Player_Stats(float atk, float def)
 	Player_ATK = atk;
 	Player_DEF = def;
 }
-
 
 // ----------------------------------------------------------------------------------------------------------------
 //												Player Update Logic

@@ -29,7 +29,7 @@ public:
 
         m_Max_Range     = 150.0f;
         m_Step_Size     = 0.5f;
-        m_Visual_Speed  = 100.0f;
+        m_Visual_Speed  = 150.0f;
         m_Hit_Enemy     = false;
         m_Hit_Wall      = false;
 
@@ -76,7 +76,7 @@ public:
         if (!m_IsActive) return;
 
         int texID = Texture_Manager::GetInstance()->GetID("Player");
-        Billboard_Draw(texID, m_Position, 0.2f, 2.0f, { 0.5f, 0.5f }, { 1.0f, 0.8f, 0.0f, 1.0f });
+        Billboard_Draw(texID, m_Position, 0.2f, 0.2f, { 0.5f, 0.5f }, { 1.0f, 0.8f, 0.0f, 1.0f });
     }
 
 private:
@@ -86,10 +86,10 @@ private:
     bool m_Hit_Wall = false;
 
 	// Ray Casting To Calculate Hit Point Immediately Upon Firing
-    void Calculate_Hit_Point(const XMFLOAT3& Cam_Pos, const XMFLOAT3& Cam_Dir)
+    void Calculate_Hit_Point(const XMFLOAT3& Start_P, const XMFLOAT3& Dir_V)
     {
-        XMVECTOR Ray_Pos = XMLoadFloat3(&Cam_Pos);
-        XMVECTOR Ray_Dir = XMLoadFloat3(&Cam_Dir);
+        XMVECTOR Ray_Pos = XMLoadFloat3(&Start_P);
+        XMVECTOR Ray_Dir = XMLoadFloat3(&Dir_V);
         float Now_Dist = 0.0f;
 
 		// Default Target Is The End Of The Ray (In Case No Collision)

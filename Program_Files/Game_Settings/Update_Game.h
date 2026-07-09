@@ -5,8 +5,8 @@
 	Author : Choi HyungJoon
 
 ==============================================================================*/
-#ifndef GAME_MANAGER_H
-#define GAME_MANAGER_H
+#ifndef UPTADE_GAME_H
+#define UPTADE_GAME_H
 #include "Game_Screen_Manager.h"
 
 void Game_Logic_Initialize();
@@ -21,4 +21,4 @@ void Main_Game_Screen_Update();
 void Sub_Game_Screen_Update();
 void Game_Select_Screen_Update();
 
-#endif // GAME_MANAGER_H
+#endif // UPTADE_GAME_H

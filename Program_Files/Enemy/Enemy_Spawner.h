@@ -28,6 +28,7 @@ public:
     float GetCurrentGameTime() const { return m_GameTime; }
     
     void Set_Z_Depth(float depth);
+    float Get_Z_Depth() const;
 
 private:
     Enemy_Spawner() = default;
@@ -35,9 +36,10 @@ private:
     Enemy_Spawner(const Enemy_Spawner&) = delete;
     Enemy_Spawner& operator=(const Enemy_Spawner&) = delete;
 
-    DirectX::XMFLOAT3 Get_Spawn_Position(EnemyType type, float ratio_X, int batchIndex);
+    DirectX::XMFLOAT3 Get_Spawn_Position(EnemyType type, float ratio_X, int batchIndex) const;
 
     float m_GameTime = 0.0f;
     std::vector<float> m_WaveTimers;
+    float m_Spawn_Base_Z = 150.0f;
 };
 #endif // ENEMY_SPAWNER_H

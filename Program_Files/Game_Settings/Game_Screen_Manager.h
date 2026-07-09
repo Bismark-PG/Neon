@@ -36,13 +36,13 @@ enum class Game_Select_Screen
     G_DONE
 };
 
-class Game_Manager
+class Game_Screen_Manager
 {
 public:
-    static Game_Manager* GetInstance();
+    static Game_Screen_Manager* GetInstance();
 
-	Game_Manager(const Game_Manager&) = delete;
-	Game_Manager& operator=(const Game_Manager&) = delete;
+    Game_Screen_Manager(const Game_Screen_Manager&) = delete;
+    Game_Screen_Manager& operator=(const Game_Screen_Manager&) = delete;
 
     void Change_Screen(Main_Screen M_Screen, Sub_Screen S_Screen, Game_Select_Screen G_Screen);
 
@@ -58,8 +58,8 @@ public:
     void Apply_Screen_Changes();
 
 private:
-    Game_Manager() = default;
-    ~Game_Manager() = default;
+    Game_Screen_Manager() = default;
+    ~Game_Screen_Manager() = default;
 
     Main_Screen Current_Main_Screen = Main_Screen::M_WAIT;
     Sub_Screen Current_Sub_Screen = Sub_Screen::S_WAIT;

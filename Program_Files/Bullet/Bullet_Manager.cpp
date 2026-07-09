@@ -13,18 +13,27 @@
 void Bullet_Manager::Init()
 {
     m_Ray_Pool.clear();
+    m_Missile_Pool.clear();
+
     m_Active_List.clear();
 
     for (int i = 0; i < MAX_RAY_POOL; ++i)
     {
         m_Ray_Pool.push_back(new Bullet_Ray());
     }
+    for (int i = 0; i < MAX_MISSILE_POOL; ++i)
+    {
+        m_Missile_Pool.push_back(new Bullet_Missile());
+    }
 }
 
 void Bullet_Manager::Final()
 {
     for (Bullet* B : m_Ray_Pool) delete B;
+    for (Bullet* B : m_Missile_Pool) delete B;
+
     m_Ray_Pool.clear();
+    m_Missile_Pool.clear();
     m_Active_List.clear();
 }
 
@@ -34,6 +43,12 @@ void Bullet_Manager::Reset()
     {
         if (B->IsActive()) B->Deactivate();
     }
+
+    for (Bullet* B : m_Missile_Pool)
+    {
+        if (B->IsActive()) B->Deactivate();
+    }
+
     m_Active_List.clear();
 }
 
@@ -42,6 +57,15 @@ void Bullet_Manager::Update(float Elapsed_Time)
     m_Active_List.clear();
 
     for (Bullet* B : m_Ray_Pool)
+    {
+        if (B->IsActive())
+        {
+            B->Update(Elapsed_Time);
+            m_Active_List.push_back(B);
+        }
+    }
+
+    for (Bullet* B : m_Missile_Pool)
     {
         if (B->IsActive())
         {

@@ -14,7 +14,8 @@ enum class Billboard_Facing
 {
 	ALL_AXIS,       // For Player
 	YAW_ROLL_ONLY,  // For Enemy
-	FIXED_NONE      // For Ground Or Sky
+	FLOOR,			// For Ground
+	FIXED_NONE      // For Sky
 };
 
 void Billboard_Initialize();

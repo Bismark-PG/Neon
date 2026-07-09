@@ -198,19 +198,19 @@ void Main_Menu_Update(float elapsed_time)
 			switch (Get_Main_Menu_Buffer())
 			{
 			case Main_Select_Buffer::Start:
-				Game_Manager::GetInstance()->Update_Main_Screen(Main_Screen::SELECT_GAME);
-				Game_Manager::GetInstance()->Update_Game_Select_Screen(Game_Select_Screen::GAME_MENU_SELECT);
+				Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::SELECT_GAME);
+				Game_Screen_Manager::GetInstance()->Update_Game_Select_Screen(Game_Select_Screen::GAME_MENU_SELECT);
 				Set_Main_Menu_Buffer(Main_Select_Buffer::None);
 				break;
 
 			case Main_Select_Buffer::Setting:
-				Game_Manager::GetInstance()->Update_Main_Screen(Main_Screen::SELECT_SETTINGS);
-				Game_Manager::GetInstance()->Update_Sub_Screen(Sub_Screen::SETTINGS);
+				Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::SELECT_SETTINGS);
+				Game_Screen_Manager::GetInstance()->Update_Sub_Screen(Sub_Screen::SETTINGS);
 				Set_Main_Menu_Buffer(Main_Select_Buffer::None);
 				break;
 
 			case Main_Select_Buffer::Exit:
-				Game_Manager::GetInstance()->Update_Main_Screen(Main_Screen::EXIT);
+				Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::EXIT);
 				Set_Main_Menu_Buffer(Main_Select_Buffer::Done);
 				Fade_Start(FADE_OUT_TIME, true);
 				EXIT_STATE = true;
@@ -277,7 +277,8 @@ void Main_Menu_Texture()
 {
 	//---------------Main Menu Texture---------------//
 	Main_BG  = Texture_Manager::GetInstance()->GetID("W");
-	Main_Title  = Texture_Manager::GetInstance()->GetID("BG_Title");
+	//Main_Title  = Texture_Manager::GetInstance()->GetID("BG_Title");
+	Main_Title = 1;
 
 	UI_Start = Texture_Manager::GetInstance()->GetID("Start");
 	UI_Set	 = Texture_Manager::GetInstance()->GetID("Settings");
@@ -286,5 +287,10 @@ void Main_Menu_Texture()
 	if (Main_BG == -1 || Main_Title == -1 || UI_Start == -1 || UI_Set == -1 || UI_Exit == -1)
 	{
 		Debug::D_Out << "[Main Menu] Texture Init Error" << std::endl;
+		Debug::D_Out << "Main_BG : " << Main_BG 
+			<< "Main_Title : " << Main_Title 
+			<< "UI_Start : " << UI_Start 
+			<< "UI_Set : " << UI_Set 
+			<< "UI_Exit : " << UI_Exit << std::endl;
 	}
 }

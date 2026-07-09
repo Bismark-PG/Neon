@@ -13,6 +13,7 @@
 #include "Particle_Manager.h"
 #include "Billboard.h"        
 #include "Texture_Manager.h"
+#include "Frame.h"
 using namespace DirectX;
 
 class Bullet_Missile : public Bullet
@@ -28,7 +29,7 @@ public:
         m_Target = Target;
         m_TargetID = (Target != nullptr) ? Target->GetUniqueID() : -1;
 
-        m_Visual_Speed = 60.0f; 
+        m_Visual_Speed = 100.0f; 
         m_Turn_Speed = 10.0f;   
         m_Hit_Enemy = false;
     }
@@ -44,6 +45,18 @@ public:
         if (m_Target != nullptr && m_Target->IsActive() && m_Target->GetUniqueID() == m_TargetID)
         {
             XMFLOAT3 Target_Pos = m_Target->GetPosition();
+
+			float Z_Diff = abs(Target_Pos.z - m_Position.z);
+
+            // If Close Enough, Hit Enemy
+            if (Z_Diff <= (m_Visual_Speed * Elapsed_Time * static_cast<float>(Frame_Rate::Three_Frame)))
+            {
+                m_Target->OnDamage(m_Damage);
+				// Need Effect For Hit Enemy
+                Deactivate();
+                return;
+			}
+
             XMVECTOR V_Target_Pos = XMLoadFloat3(&Target_Pos);
             XMVECTOR V_To_Target = XMVector3Normalize(V_Target_Pos - V_Current_Pos);
 
@@ -66,7 +79,7 @@ public:
         if (Hit_Enemy != nullptr)
         {
             Hit_Enemy->OnDamage(m_Damage);
-            Particle_Manager::GetInstance().Spawn_Spark(m_Position);
+            // Need Effect For Hit Enemy
             Deactivate();
             return;
         }

@@ -42,6 +42,7 @@ void Enemy_Manager::Update(double elapsed_time)
 	float dt = static_cast<float>(elapsed_time);
 
     m_ActiveList.clear();
+
 	Enemy_Spawner::GetInstance().Update(dt);
 
     for (Enemy* e : m_EnemyPool)

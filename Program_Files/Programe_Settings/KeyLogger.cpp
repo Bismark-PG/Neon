@@ -36,7 +36,7 @@ static Mouse_State MousePrevState{};
 
 void KeyLogger_Initialize(HWND window)
 {
-	X_Vibrate = Frame_Rate::Frame_Rate_None;
+	X_Vibrate = static_cast<int>(Frame_Rate::Frame_Rate_None);
 	Is_Controller_Used = false;
 	Is_Controller_Input = false;
 	Is_Controller_Output = false;
@@ -74,7 +74,7 @@ void KeyLogger_Update()
 	if (!PrevConnected && IsConnected)
 	{
 		Is_Controller_Input = true;
-		X_Vibrate = Frame_Rate::Half_Sec;
+		X_Vibrate = static_cast<int>(Frame_Rate::Half_Sec);
 	}
 	else if (PrevConnected && !IsConnected)
 		Is_Controller_Output = true;

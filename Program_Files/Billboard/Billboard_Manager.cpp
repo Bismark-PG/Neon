@@ -16,6 +16,8 @@ int Billboard_Effect::Smoke_Pattern_ID = -1;
 
 void Billboard_Manager::Init()
 {
+    Billboard_Initialize();
+
     m_EffectPool.clear();
 
     Billboard_Effect::Initialize_Resource();
@@ -30,7 +32,10 @@ void Billboard_Manager::Init()
 void Billboard_Manager::Final()
 {
     for (auto* effect : m_EffectPool) delete effect;
+
     m_EffectPool.clear();
+
+    Billboard_Finalize();
 }
 
 void Billboard_Manager::Reset()

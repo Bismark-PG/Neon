@@ -29,6 +29,8 @@
 #include "Texture_Manager.h"
 #include "Billboard.h"
 #include "Billboard_Manager.h"
+#include "Particle_Manager.h"
+#include "Map_Manager.h"
 
 // Resource Set
 #include "Game_Texture.h"
@@ -41,6 +43,7 @@
 #include "Main_Menu.h"
 #include "Update_Game.h"
 #include "Enemy_Manager.h"
+#include "Bullet_Manager.h"
 
 // Debug Set
 #include "debug_text.h"
