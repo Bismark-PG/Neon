@@ -61,8 +61,6 @@ void Mouse_Initialize(HWND window)
     gRelativeY = INT32_MAX;
 
     gInFocus = true;
-
-    Mouse_UI_set();
 }
 
 void Mouse_Finalize(void)
@@ -383,12 +381,13 @@ void Return_Mouse_Movement()
 
 void Mouse_UI_Draw(Mouse_Info Info)
 {
-    float Mouse_Half = Info.Size * 0.5f;
+    //float Mouse_Half = Info.Size * 0.5f;
+    float Mouse_Half = 0.0f;
     float Mouse_X = Info.X - Mouse_Half, Mouse_Y = Info.Y - Mouse_Half;
 
     Sprite_Draw(Mouse_UI_Tex, Mouse_X, Mouse_Y, Info.Size, Info.Size);
 
-    Debug::D_Out << "[Mouse] X : " << Info.X << " Y : " << Info.Y << std::endl;
+    // Debug::D_Out << "[Mouse] X : " << Info.X << " Y : " << Info.Y << std::endl;
 }
 
 Mouse_State Mouse_Get_Prev_State(Mouse_Info& Info)

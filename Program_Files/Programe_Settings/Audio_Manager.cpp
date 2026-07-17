@@ -24,6 +24,7 @@ public:
     }
     ~Voice_Callback() {}
 
+    // CallBack Function
     void OnStreamEnd() override {}
     void OnVoiceProcessingPassEnd() override {}
     void OnVoiceProcessingPassStart(UINT32 BytesRequired) override
@@ -32,12 +33,14 @@ public:
         UNREFERENCED_PARAMETER(BytesRequired);
     }
 
+    // CallBack For Audio Source Start
     void OnBufferStart(void* pBufferContext) override
     {
         // Do Not Show Error For Not Used Resource, Not Necessary
         UNREFERENCED_PARAMETER(pBufferContext);
     }
 
+    // CallBack For Error Check
     void OnVoiceError(void* pBufferContext, HRESULT Error) override
     {
         // Do Not Show Error For Not Used Resource, Not Necessary
@@ -45,6 +48,7 @@ public:
         UNREFERENCED_PARAMETER(Error);
     }
 
+    // CallBack For Loop Counting
     void OnLoopEnd(void* pBufferContext) override
     {
         // Do Not Show Error For Not Used Resource, Not Necessary
@@ -68,18 +72,26 @@ public:
         }
     }
 
+    // CallBack For Finished Audio Source
     void OnBufferEnd(void* pBufferContext) override
     {
         IXAudio2SourceVoice* pSourceVoice = (IXAudio2SourceVoice*)pBufferContext;
 
-        std::lock_guard<std::mutex> lock(m_Mutex);
-
-        auto Find = std::find(m_ActiveVoices.begin(), m_ActiveVoices.end(), pSourceVoice);
-
-        if (Find != m_ActiveVoices.end())
+		// Remove from Active Voices
         {
-            m_ActiveVoices.erase(Find);
-            pSourceVoice->DestroyVoice();
+            std::lock_guard<std::mutex> lock(m_Mutex);
+            auto Find = std::find(m_ActiveVoices.begin(), m_ActiveVoices.end(), pSourceVoice);
+            if (Find != m_ActiveVoices.end())
+            {
+                m_ActiveVoices.erase(Find);
+            }
+        }
+
+		// Add to Garbage for Destruction
+        if (m_pManager)
+        {
+            std::lock_guard<std::mutex> lock(m_pManager->Garbage_Mutex);
+            m_pManager->Garbage_Voices.push_back(pSourceVoice);
         }
     }
 
@@ -162,6 +174,9 @@ void Audio_Manager::Final()
     }
 
     SFXs.clear();
+
+    // CleanUp Before Finalize X_Audio
+    CleanUp_Garbage_Voices();
 
     if (m_pMasteringVoice)
     {
@@ -255,8 +270,9 @@ void Audio_Manager::Play_BGM(const std::string& name, bool bLoop)
     single.push_back(name);
 
     Play_Layered_BGM(single, bLoop);
-
     Set_Layer_Volume(name, 1.0f);
+
+    Debug::D_Out << "[Audio Manager] Now Play BGM : " << name << std::endl;
 }
 
 void Audio_Manager::Pause_BGM(bool isPause)
@@ -332,29 +348,39 @@ void Audio_Manager::Stop_BGM()
         {
             layer.Source->Stop();
             layer.Source->FlushSourceBuffers();
-            layer.Source->DestroyVoice();
         }
     }
 
     Active_BGM_Layers.clear();
 
+    Debug::D_Out << "[Audio Manager] Stop BGM : " << Now_Playing_BGM_Name << std::endl;
     Now_Playing_BGM_Name = ""; 
 }
 
 void Audio_Manager::Stop_BGM(const std::string& name)
 {
     auto Find = BGMs.find(name);
+    Debug::D_Out << "[Audio Manager] Find BGM Name : " << name << std::endl;
 
     if (Find != BGMs.end() && Find->second.Source)
+    {
+        Debug::D_Out << "[Audio Manager] Stop BGM : " << name << std::endl;
         Find->second.Source->Stop();
+    }
 
     if (name == Now_Playing_BGM_Name)
+    {
         Now_Playing_BGM_Name = "";
+    }
 }
 
 void Audio_Manager::Play_SFX(const std::string& name)
 {
+	// First, Clean Up Any Finished Voices
+    CleanUp_Garbage_Voices();
+
     auto Find = SFXs.find(name);
+    Debug::D_Out << "[Audio Manager] Find SFX Name : " << name << std::endl;
 
     if (Find == SFXs.end())
         return;
@@ -381,18 +407,28 @@ void Audio_Manager::Play_SFX(const std::string& name)
     }
 
     Source_Voice->Start();
+    Debug::D_Out << "[Audio Manager] Now Play SFX : " << name << std::endl;
 }
 
 void Audio_Manager::Stop_All_SFX()
 {
-    std::lock_guard<std::mutex> Lock(Voice_Mutex);
-    for (auto Voice : Active_SFX_Voices)
+	// Check For Finished Voices and Clean Up
+    CleanUp_Garbage_Voices();
+
+    std::vector<IXAudio2SourceVoice*> Temp_Voices;
     {
-        Voice->Stop();
-        Voice->DestroyVoice();
+		// Mutex is only held briefly during the copy operation and then released immediately
+        std::lock_guard<std::mutex> Lock(Voice_Mutex);
+        Temp_Voices = Active_SFX_Voices;
     }
 
-    Active_SFX_Voices.clear();
+	// If Handle Any Mutex, Will Be Deadlock, So Do Not Use Mutex Here, Just Stop & Destroy
+    for (auto Voice : Temp_Voices)
+    {
+        Voice->Stop();
+        // Don`t Need Destroy, Flush Will Be CallBack
+        Voice->FlushSourceBuffers();
+    }
 }
 
 // Manage Volume
@@ -598,4 +634,18 @@ bool Audio_Manager::Load_Wave_File(const char* pFilePath, Sound_Data& soundData)
 
     mmioClose(HMMIO_Open, 0);
     return true;
+}
+
+void Audio_Manager::CleanUp_Garbage_Voices()
+{
+	// Move Garbage Voices to Temporary Vector
+    std::vector<IXAudio2SourceVoice*> Temp;
+    {
+        std::lock_guard<std::mutex> lock(Garbage_Mutex);
+        Temp = Garbage_Voices;
+        Garbage_Voices.clear();
+    }
+
+	// Destroy Voices Outside of Lock
+    for (auto v : Temp) v->DestroyVoice();
 }

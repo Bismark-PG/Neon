@@ -14,30 +14,37 @@
 #include "Main_Game.h"
 #include "Main_Menu.h"
 #include "Title.h"
+#include "Setting.h"
 
 void Game_Logic_Initialize()
 {
 	Main_Game_Manager::GetIntance()->In_Game_Initialize();
 	Title_Initialize();
 	Main_Menu_Initialize();
+	Setting_Initialize();
 }
 
 void Game_Logic_Finalize()
 {
+	Setting_Finalize();
 	Main_Menu_Finalize();
 	Title_Finalize();
 	Main_Game_Manager::GetIntance()->In_Game_Finalize();
 }
+
 void Game_Logic_Update(double elapsed_time)
 {
 	float dt = static_cast<float>(elapsed_time);
 
-	if (KeyLogger_IsTrigger(KK_ESCAPE))
+	if (KeyLogger_IsTrigger(KK_BACK))
 	{
-		Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MAIN);
-		Game_Screen_Manager::GetInstance()->Update_Game_Select_Screen(Game_Select_Screen::G_WAIT);
-		Set_Main_Menu_Buffer(Main_Select_Buffer::None);
-		Mouse_SetMode(MOUSE_POSITION_MODE_ABSOLUTE);  
+		if (Game_Screen_Manager::GetInstance()->Get_Current_Main_Screen() == Main_Screen::SELECT_GAME)
+		{
+			Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::MENU_SELECT);
+			Game_Screen_Manager::GetInstance()->Update_Game_Select_Screen(Game_Select_Screen::G_WAIT);
+			Set_Main_Menu_Buffer(Main_Select_Buffer::None);
+			Mouse_SetMode(MOUSE_POSITION_MODE_ABSOLUTE);
+		}
 	}
 
 	Game_Screen_Manager::GetInstance()->Apply_Screen_Changes();
@@ -46,9 +53,18 @@ void Game_Logic_Update(double elapsed_time)
 	Sub_Screen S_State = Game_Screen_Manager::GetInstance()->Get_Current_Sub_Screen();
 	Game_Select_Screen G_State = Game_Screen_Manager::GetInstance()->Get_Current_Game_Select_Screen();
 
-	Game_Logic_Menu(M_State, dt);
-	Game_Logic_Sub(S_State, dt);
-	Game_Logic_InGame(G_State, dt);
+	// If Sub Screen(Setting) Is Pop-Up, Do Update Setting Only
+	if (S_State != Sub_Screen::S_WAIT)
+	{
+		Game_Logic_Sub(S_State, dt);
+	}
+	// When Sub Scrren State Is Wait, It Will Be Setting Done.
+	// So Do Update Main Logic(Menu, In-Game Logic)
+	else
+	{
+		Game_Logic_Menu(M_State, dt);
+		Game_Logic_InGame(G_State, dt);
+	}
 }
 
 void Game_Logic_Menu(Main_Screen State, float elapsed_time)
@@ -79,6 +95,7 @@ void Game_Logic_Sub(Sub_Screen State, float elapsed_time)
 		break;
 
 	case Sub_Screen::SETTINGS:
+		Setting_Update(elapsed_time);
 		break;
 
 	case Sub_Screen::S_DONE:
@@ -134,10 +151,6 @@ void Main_Game_Screen_Update()
 		Game_Select_Screen_Update();
 		break;
 
-	case Main_Screen::SELECT_SETTINGS:
-		Sub_Game_Screen_Update();
-		break;
-
 	case Main_Screen::EXIT:
 		Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::M_DONE);
 		Main_Menu_Draw();
@@ -149,6 +162,8 @@ void Main_Game_Screen_Update()
 		Debug::D_Out << "Programme Done" << std::endl;
 		break;
 	}
+
+	Sub_Game_Screen_Update();
 }
 
 void Sub_Game_Screen_Update()
@@ -161,6 +176,7 @@ void Sub_Game_Screen_Update()
 		break;
 
 	case Sub_Screen::SETTINGS:
+		Setting_Draw();
 		break;
 
 	case Sub_Screen::S_DONE:

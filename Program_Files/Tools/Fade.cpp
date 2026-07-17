@@ -43,9 +43,8 @@ void Fade_Update(double elapsed_time)
 {
 #if defined(DEBUG) || defined(_DEBUG)
     std::stringstream Debug;
-    Debug << "[Fade_Update] State : " << (int)State << std::endl;
-    Debug << "Accumulated Time : " << AccumulatedTime << std::endl;
-    Debug << "Start Time : " << FadeStartTime << std::endl;
+    Debug << "[Fade_Update] State : " << static_cast<int>(State) << std::endl;
+    Debug << "Accumulated Time : " << AccumulatedTime << "\t" << "Start Time : " << FadeStartTime << std::endl;
 #endif
 
     if (State == FADE_STATE::FINISHED_IN || State == FADE_STATE::FINISHED_OUT) return;
@@ -58,11 +57,11 @@ void Fade_Update(double elapsed_time)
     if (Progress >= 1.0)
     {
 #if defined(DEBUG) || defined(_DEBUG)
-        Debug << "Fade Finished! Previous State : " << (int)State << std::endl;
+        Debug << "Fade Finished! Previous State : " << static_cast<int>(State) << std::endl;
 #endif
         State = State == FADE_STATE::FADE_IN ? FADE_STATE::FINISHED_IN : FADE_STATE::FINISHED_OUT;
 #if defined(DEBUG) || defined(_DEBUG)
-        Debug << "New State : " << (int)State << std::endl;
+        Debug << "New State : " << static_cast<int>(State) << std::endl;
 #endif
     }
 
@@ -101,9 +100,7 @@ void Fade_Draw(void)
     Sprite_Draw(Fade_Texture, 0.0f, 0.0f, screenW, screenH, {}, F_Color);
 
     std::stringstream Debug;
-    Debug << "W" << screenW << std::endl;
-    Debug << "H" << screenH << std::endl;
-    Debug << "A" << Fade_Alpha << std::endl;
+    Debug << "W : " << screenW << "\t" << "H : " << screenH << "\t"  << "A : " << Fade_Alpha << std::endl;
     OutputDebugStringA(Debug.str().c_str());
 }
 

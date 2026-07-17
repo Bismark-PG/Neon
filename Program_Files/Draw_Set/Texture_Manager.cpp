@@ -13,6 +13,7 @@
 #include "Texture_Manager.h"
 #include "direct3d.h"
 #include "WICTextureLoader11.h"
+#include "debug_ostream.h"
 using namespace DirectX;
 
 Texture_Manager* Texture_Manager::GetInstance()
@@ -113,4 +114,19 @@ unsigned int Texture_Manager::Get_Height(int textureId)
         return 0;
 
     return m_textures[textureId].Height;
+}
+
+float Texture_Manager::Get_Proportional_Width(int Tex_ID, float Target_Height)
+{
+    if (Tex_ID == -1)
+    {
+        Debug::D_Out << "[Texture Proportional] Missing Texture ID" << std::endl;
+        return 0.0f;
+    }
+    float Tex_W = static_cast<float>(Get_Width(Tex_ID));
+    float Tex_H = static_cast<float>(Get_Height(Tex_ID));
+
+    if (Tex_H == 0.0f) return 0.0f;
+
+    return Tex_W * (Target_Height / Tex_H);
 }

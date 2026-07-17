@@ -16,26 +16,24 @@
 #include "Player_Camera.h"
 #include "Controller_Input.h"
 #include "Light_Manager.h"
+
 using namespace DirectX;
 
 //----------------UI Texture----------------//
 static int Main_BG = -1;
 static int Main_Title = -1;
-static int UI_Start = -1;
-static int UI_Set = -1;
-static int UI_Exit = -1;
+static int UI_Start[2] = {-1, -1}, UI_Set[2] = {-1, -1}, UI_Ranking[2] = { -1, -1 },  UI_Exit[2] = { -1, -1 };
 
 //----------------------POS----------------------/
 static float BG_W, BG_H;
 static float Title_X, Title_Y, Title_W, Title_H;
 
-static float UI_X;
-static float Start_Y;
-static float Settings_Y;
-static float Exit_Y;
+static float UI_H;
 
-static float UI_Width;
-static float UI_Height;
+static float Start_W, Start_X, Start_Y;
+static float Set_W, Set_X, Set_Y;
+static float Rank_W, Rank_X, Rank_Y;
+static float Exit_W, Exit_X, Exit_Y;
 
 //----------------State & Data----------------//
 // State Info
@@ -70,22 +68,41 @@ void Main_Menu_Initialize()
 	BG_W = static_cast<float>(Direct3D_GetBackBufferWidth());
 	BG_H = static_cast<float>(Direct3D_GetBackBufferHeight());
 
-	Title_W = BG_W * 0.3f;
-	Title_H = BG_H * 0.3f;
-	Title_X = (BG_W * 0.9f) - Title_W;
-	Title_Y = BG_H * 0.15f;
+	Title_H = BG_H * 0.25f;
+	Title_W = Texture_Manager::GetInstance()->Get_Proportional_Width(Main_Title, Title_H);
+	Title_X = BG_W * 0.1f;
+	Title_Y = BG_H * 0.175f;
+
+	UI_H = BG_H * 0.05f;
+	float Base_X = BG_W * 0.85f;
+
+	// Start Menu
+	Start_W = Texture_Manager::GetInstance()->
+		Get_Proportional_Width(UI_Start[static_cast<int>(Menu_State::Wait)], UI_H);
+	Start_X = Base_X - (Start_W * 0.5f);
+	Start_Y = (BG_H * 0.675f) - (UI_H * 0.5f);
+
+	// Setting Menu
+	Set_W = Texture_Manager::GetInstance()->
+		Get_Proportional_Width(UI_Set[static_cast<int>(Menu_State::Wait)], UI_H);
+	Set_X = Base_X - (Set_W * 0.5f);
+	Set_Y = (BG_H * 0.75f) - (UI_H * 0.5f);
+
+	// Ranking Menu
+	Rank_W = Texture_Manager::GetInstance()->
+		Get_Proportional_Width(UI_Ranking[static_cast<int>(Menu_State::Wait)], UI_H);
+	Rank_X = Base_X - (Rank_W * 0.5f);
+	Rank_Y = (BG_H * 0.825f) - (UI_H * 0.5f);
+
+	// Exit Menu
+	Exit_W = Texture_Manager::GetInstance()->
+		Get_Proportional_Width(UI_Exit[static_cast<int>(Menu_State::Wait)], UI_H);
+	Exit_X = Base_X - (Exit_W * 0.5f);
+	Exit_Y = (BG_H * 0.9f) - (UI_H * 0.5f);
 
 	Mouse_Menu.Size = BG_H * 0.05f;
 	Mouse_Menu.Prev_X = BG_W * 0.5f;
 	Mouse_Menu.Prev_Y = BG_H * 0.5f;
-
-	UI_Width = BG_W * 0.175f;
-	UI_Height = BG_H * 0.075f;
-	UI_X = BG_W * 0.2f - UI_Width * 0.5f;
-
-	Start_Y = BG_H * 0.55f - UI_Height * 0.5f;
-	Settings_Y = BG_H * 0.7f - UI_Height * 0.5f;
-	Exit_Y = BG_H * 0.85f - UI_Height * 0.5f;
 
 	Set_Main_Menu_Buffer(Main_Select_Buffer::None);
 }
@@ -98,12 +115,11 @@ void Main_Menu_Update(float elapsed_time)
 {
 	Mouse_State State = Mouse_Get_Prev_State(Mouse_Menu);
 	bool Mouse_Movement = Is_Mouse_Moved();
-
 	bool Is_Mouse_Click = (State.leftButton);
 
 	if (Mouse_Movement)
 	{
-		if (Is_Mouse_In_RECT(Mouse_Menu.X, Mouse_Menu.Y, UI_X, Start_Y, UI_Width, UI_Height))
+		if (Is_Mouse_In_RECT(Mouse_Menu.X, Mouse_Menu.Y, Start_X, Start_Y, Start_W, UI_H))
 		{
 			if (Get_Main_Menu_Buffer() != Main_Select_Buffer::Start)
 			{
@@ -111,7 +127,7 @@ void Main_Menu_Update(float elapsed_time)
 				Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
 			}
 		}
-		else if (Is_Mouse_In_RECT(Mouse_Menu.X, Mouse_Menu.Y, UI_X, Settings_Y, UI_Width, UI_Height))
+		else if (Is_Mouse_In_RECT(Mouse_Menu.X, Mouse_Menu.Y, Set_X, Set_Y, Set_W, UI_H))
 		{
 			if (Get_Main_Menu_Buffer() != Main_Select_Buffer::Setting)
 			{
@@ -119,7 +135,15 @@ void Main_Menu_Update(float elapsed_time)
 				Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
 			}
 		}
-		else if (Is_Mouse_In_RECT(Mouse_Menu.X, Mouse_Menu.Y, UI_X, Exit_Y, UI_Width, UI_Height))
+		else if (Is_Mouse_In_RECT(Mouse_Menu.X, Mouse_Menu.Y, Rank_X, Rank_Y, Rank_W, UI_H))
+		{
+			if (Get_Main_Menu_Buffer() != Main_Select_Buffer::Ranking)
+			{
+				Set_Main_Menu_Buffer(Main_Select_Buffer::Ranking);
+				Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
+			}
+		}
+		else if (Is_Mouse_In_RECT(Mouse_Menu.X, Mouse_Menu.Y, Exit_X, Exit_Y, Exit_W, UI_H))
 		{
 			if (Get_Main_Menu_Buffer() != Main_Select_Buffer::Exit)
 			{
@@ -135,44 +159,50 @@ void Main_Menu_Update(float elapsed_time)
 
 	if (KeyLogger_IsTrigger(KK_W) || KeyLogger_IsTrigger(KK_UP) || XKeyLogger_IsPadTrigger(XINPUT_GAMEPAD_DPAD_UP))
 	{
-		if (Get_Main_Menu_Buffer() == Main_Select_Buffer::None || Get_Main_Menu_Buffer() == Main_Select_Buffer::Wait)
+		Main_Select_Buffer current = Get_Main_Menu_Buffer();
+		if (current == Main_Select_Buffer::None || current == Main_Select_Buffer::Wait)
 		{
 			Set_Main_Menu_Buffer(Main_Select_Buffer::Start);
 			Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
 		}
-		else
+		else if (current == Main_Select_Buffer::Setting)
+		{ 
+			Set_Main_Menu_Buffer(Main_Select_Buffer::Start);
+			Audio_Manager::GetInstance()->Play_SFX("Buffer_Move"); 
+		}
+		else if (current == Main_Select_Buffer::Ranking)
 		{
-			if (Get_Main_Menu_Buffer() == Main_Select_Buffer::Setting)
-			{
-				Set_Main_Menu_Buffer(Main_Select_Buffer::Start);
-				Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
-			}
-			else if (Get_Main_Menu_Buffer() == Main_Select_Buffer::Exit)
-			{
-				Set_Main_Menu_Buffer(Main_Select_Buffer::Setting);
-				Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
-			}
+			Set_Main_Menu_Buffer(Main_Select_Buffer::Setting); 
+			Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
+		}
+		else if (current == Main_Select_Buffer::Exit)
+		{
+			Set_Main_Menu_Buffer(Main_Select_Buffer::Ranking);
+			Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
 		}
 	}
 	else if (KeyLogger_IsTrigger(KK_S) || KeyLogger_IsTrigger(KK_DOWN) || XKeyLogger_IsPadTrigger(XINPUT_GAMEPAD_DPAD_DOWN))
 	{
-		if (Get_Main_Menu_Buffer() == Main_Select_Buffer::None || Get_Main_Menu_Buffer() == Main_Select_Buffer::Wait)
+		Main_Select_Buffer current = Get_Main_Menu_Buffer();
+		if (current == Main_Select_Buffer::None || current == Main_Select_Buffer::Wait)
 		{
 			Set_Main_Menu_Buffer(Main_Select_Buffer::Start);
 			Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
 		}
-		else
+		else if (current == Main_Select_Buffer::Start) 
 		{
-			if (Get_Main_Menu_Buffer() == Main_Select_Buffer::Start)
-			{
-				Set_Main_Menu_Buffer(Main_Select_Buffer::Setting);
-				Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
-			}
-			else if (Get_Main_Menu_Buffer() == Main_Select_Buffer::Setting)
-			{
-				Set_Main_Menu_Buffer(Main_Select_Buffer::Exit);
-				Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
-			}
+			Set_Main_Menu_Buffer(Main_Select_Buffer::Setting);
+			Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
+		}
+		else if (current == Main_Select_Buffer::Setting) 
+		{
+			Set_Main_Menu_Buffer(Main_Select_Buffer::Ranking);
+			Audio_Manager::GetInstance()->Play_SFX("Buffer_Move");
+		}
+		else if (current == Main_Select_Buffer::Ranking) 
+		{
+			Set_Main_Menu_Buffer(Main_Select_Buffer::Exit); 
+			Audio_Manager::GetInstance()->Play_SFX("Buffer_Move"); 
 		}
 	}
 
@@ -182,6 +212,7 @@ void Main_Menu_Update(float elapsed_time)
 	{
 		if (Get_Main_Menu_Buffer() == Main_Select_Buffer::Start ||
 			Get_Main_Menu_Buffer() == Main_Select_Buffer::Setting ||
+			Get_Main_Menu_Buffer() == Main_Select_Buffer::Ranking ||
 			Get_Main_Menu_Buffer() == Main_Select_Buffer::Exit)
 		{
 			Confirm_Input = true;
@@ -207,6 +238,10 @@ void Main_Menu_Update(float elapsed_time)
 				Game_Screen_Manager::GetInstance()->Update_Main_Screen(Main_Screen::SELECT_SETTINGS);
 				Game_Screen_Manager::GetInstance()->Update_Sub_Screen(Sub_Screen::SETTINGS);
 				Set_Main_Menu_Buffer(Main_Select_Buffer::None);
+				break;
+
+			case Main_Select_Buffer::Ranking:
+				// Need Ranking Screen Implementation
 				break;
 
 			case Main_Select_Buffer::Exit:
@@ -240,17 +275,20 @@ void Main_Menu_BG_Draw()
 
 void Main_Menu_UI_Draw()
 {
-	XMFLOAT4 XMF4_A_Origin = Alpha_Origin;
-	XMFLOAT4 XMF4_A_Half   = Alpha_Half;
+	int State_Wait = static_cast<int>(Menu_State::Wait);
+	int State_Glow = static_cast<int>(Menu_State::Glow);
 
-	Sprite_Draw(UI_Start, UI_X, Start_Y, UI_Width, UI_Height, A_Zero,
-		(M_Buffer == Main_Select_Buffer::Start) ? XMF4_A_Origin : XMF4_A_Half);
+	Sprite_Draw((M_Buffer == Main_Select_Buffer::Start) ? UI_Start[State_Glow] : UI_Start[State_Wait],
+		Start_X, Start_Y, Start_W, UI_H, A_Zero);
+	
+	Sprite_Draw((M_Buffer == Main_Select_Buffer::Setting) ? UI_Set[State_Glow] : UI_Set[State_Wait],
+		Set_X, Set_Y, Set_W, UI_H, A_Zero);
 
-	Sprite_Draw(UI_Set, UI_X, Settings_Y, UI_Width, UI_Height, A_Zero,
-		(M_Buffer == Main_Select_Buffer::Setting) ? XMF4_A_Origin : XMF4_A_Half);
+	Sprite_Draw((M_Buffer == Main_Select_Buffer::Ranking) ? UI_Ranking[State_Glow] : UI_Ranking[State_Wait],
+		Rank_X, Rank_Y, Rank_W, UI_H, A_Zero);
 
-	Sprite_Draw(UI_Exit, UI_X, Exit_Y, UI_Width, UI_Height, A_Zero,
-		(M_Buffer == Main_Select_Buffer::Exit) ? XMF4_A_Origin : XMF4_A_Half);
+	Sprite_Draw((M_Buffer == Main_Select_Buffer::Exit) ? UI_Exit[State_Glow] : UI_Exit[State_Wait],
+		Exit_X, Exit_Y, Exit_W, UI_H, A_Zero);
 }
 
 Main_Select_Buffer Get_Main_Menu_Buffer()
@@ -275,16 +313,26 @@ Mouse_Info Get_Main_Menu_Mouse_POS()
 
 void Main_Menu_Texture()
 {
+	int State_Wait = static_cast<int>(Menu_State::Wait);
+	int State_Glow = static_cast<int>(Menu_State::Glow);
+
 	//---------------Main Menu Texture---------------//
-	Main_BG  = Texture_Manager::GetInstance()->GetID("W");
-	//Main_Title  = Texture_Manager::GetInstance()->GetID("BG_Title");
-	Main_Title = 1;
+	Main_BG  = Texture_Manager::GetInstance()->GetID("K");
+	Main_Title  = Texture_Manager::GetInstance()->GetID("Title");
 
-	UI_Start = Texture_Manager::GetInstance()->GetID("Start");
-	UI_Set	 = Texture_Manager::GetInstance()->GetID("Settings");
-	UI_Exit  = Texture_Manager::GetInstance()->GetID("Exit");
+	UI_Start	[State_Wait]	= Texture_Manager::GetInstance()->GetID("Start_N");
+	UI_Set		[State_Wait]	= Texture_Manager::GetInstance()->GetID("Settings_N");
+	UI_Ranking	[State_Wait]	= Texture_Manager::GetInstance()->GetID("Ranking_N");
+	UI_Exit		[State_Wait]	= Texture_Manager::GetInstance()->GetID("Exit_N");
 
-	if (Main_BG == -1 || Main_Title == -1 || UI_Start == -1 || UI_Set == -1 || UI_Exit == -1)
+	UI_Start	[State_Glow]	= Texture_Manager::GetInstance()->GetID("Start_G");
+	UI_Set		[State_Glow]	= Texture_Manager::GetInstance()->GetID("Settings_G");
+	UI_Ranking	[State_Glow]	= Texture_Manager::GetInstance()->GetID("Ranking_G");
+	UI_Exit		[State_Glow]	= Texture_Manager::GetInstance()->GetID("Exit_G");
+
+	if (Main_BG == -1 || Main_Title == -1
+		|| UI_Start[State_Wait] == -1 || UI_Set[State_Wait] == -1 || UI_Ranking[State_Wait] == -1 || UI_Exit[State_Wait] == -1
+		|| UI_Start[State_Glow] == -1 || UI_Set[State_Glow] == -1 || UI_Ranking[State_Glow] == -1 || UI_Exit[State_Glow] == -1)
 	{
 		Debug::D_Out << "[Main Menu] Texture Init Error" << std::endl;
 		Debug::D_Out << "Main_BG : " << Main_BG 

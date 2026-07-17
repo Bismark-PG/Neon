@@ -8,6 +8,10 @@
 #pragma once
 
 //--------------------- Windows API ---------------------//
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #ifndef NOMINMAX
 #define NOMINMAX
 #endif
@@ -16,6 +20,7 @@
 #include <mmsystem.h>
 #include <Xinput.h>
 #include <xaudio2.h>
+#include <winsock2.h>
 
 //--------------------- C++ Standard Library ---------------------//
 #include <iostream>

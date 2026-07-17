@@ -16,8 +16,15 @@ enum class Main_Select_Buffer
 	Wait,
 	Start,
 	Setting,
+	Ranking,
 	Exit,
 	Done
+};
+
+enum class Menu_State : int
+{
+	Wait = 0,
+	Glow = 1
 };
 
 void Main_Menu_Initialize();

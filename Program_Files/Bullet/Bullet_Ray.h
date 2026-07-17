@@ -96,11 +96,11 @@ private:
         XMVECTOR V_End_Pos = Ray_Pos + Ray_Dir * m_Max_Range;
         XMStoreFloat3(&m_Target_Position, V_End_Pos);
 
+        // It AABB Box Will Be Bigger Than Step Size For Empty Space
+        float Check_Radius = m_Step_Size * 0.8f;
+
         while (Now_Dist < m_Max_Range)
         {
-            Ray_Pos += Ray_Dir * m_Step_Size;
-            Now_Dist += m_Step_Size;
-
             XMFLOAT3 Check_Pos;
             XMStoreFloat3(&Check_Pos, Ray_Pos);
 
@@ -122,6 +122,9 @@ private:
                     break;
                 }
             }
+            // Move To Next Step (Bullet Position)
+            Ray_Pos += Ray_Dir * m_Step_Size;
+            Now_Dist += m_Step_Size;
         }
     }
 

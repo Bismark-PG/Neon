@@ -2,14 +2,18 @@
 
 	Project Main CPP [Main.cpp]
 
-	Project : 
+	Project : DirectX 11 / 2.5D Rail Shooting Game
+	Project Name : Void Nova - Vanguard
 
 	Author : Choi HyungJoon
-	Date : 2026. 06. 15
-	Version : Prototype
+	Date : 2026. 07. 00
+	Version : Alpha
 	Note : 
 
-	Version List :
+	Version List : 
+			Date : 2025. 09. 09
+			Version : Prototype
+			Note : Main Logic & Game Loop Completed
 
 ==============================================================================*/
 // #define WIN32_LEAN_AND_MEAN

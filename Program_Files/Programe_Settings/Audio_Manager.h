@@ -106,8 +106,12 @@ private:
     class Voice_Callback; // Forward Declaration
     Voice_Callback* Voice_Call_back = nullptr;
 
-    std::vector<IXAudio2SourceVoice*> Active_SFX_Voices;
-    std::mutex                        Voice_Mutex;
+    std::vector<IXAudio2SourceVoice*> Active_SFX_Voices; // Active SFX Vector
+    std::mutex                        Voice_Mutex;       // SFX Mutex
+
+    std::vector<IXAudio2SourceVoice*> Garbage_Voices;    // Finished SFX Vector
+    std::mutex                        Garbage_Mutex;     // SFX Mutex
+    void CleanUp_Garbage_Voices();                       // Garbage Remove Function
 
     // Volume States
     float Current_BGM_Volume = 0.5f;

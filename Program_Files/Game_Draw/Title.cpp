@@ -66,13 +66,12 @@ static FLARE_STATE  Current_Flare_State  = FLARE_STATE::NONE;
 static bool Is_Intro_SFX_Playing = false;
 static bool Is_Glitch_SFX_Playing = false;
 static bool Is_Flare_SFX_Playing = false;
+static bool Is_Title_Skip = false;
 
 static const float FADE_DURATION = 1.0f;
 static const float FADE_TIME = 1.5f;
 
 //---------------Private Logic---------------//
-float Get_Proportional_Width(int Tex_ID, float Target_Height);
-
 void Logo_Update(float dt);
 void Logo_Draw();
 
@@ -87,7 +86,6 @@ void Flare_Update(float dt);
 void Title_BG_Draw();
 
 void Title_Intro_Skip();
-
 //-----------------Main Logic-----------------//
 void Title_Initialize()
 {
@@ -104,48 +102,48 @@ void Title_Initialize()
 
     // 2. Created By
     MadeBy_H = Logo_Size * 0.3f;
-    MadeBy_W = Get_Proportional_Width(Intro_MadeBy, MadeBy_H);
+    MadeBy_W = Texture_Manager::GetInstance()->Get_Proportional_Width(Intro_MadeBy, MadeBy_H);
     MadeBy_X = Text_Base_X;
     MadeBy_Y = Logo_Y;
 
     // 3. Corporation
     Corp_H = Logo_Size * 0.3f;
-    Corp_W = Get_Proportional_Width(Intro_Corparation, Corp_H);
+    Corp_W = Texture_Manager::GetInstance()->Get_Proportional_Width(Intro_Corparation, Corp_H);
     Corp_X = Text_Base_X;
     Corp_Y = Logo_Y + (Logo_Size * 0.5f) - (Corp_H * 0.5f);
 
     // 4. Bismark Name
     Name_H = Corp_H;
-    Name_W = Get_Proportional_Width(Intro_Name, Name_H);
+    Name_W = Texture_Manager::GetInstance()->Get_Proportional_Width(Intro_Name, Name_H);
     Name_X = Corp_X + Corp_W + (Logo_Size * 0.1f);
     Name_Y = Corp_Y;
 
     // 5. System OS
     Sys_H = Logo_Size * 0.5f;
-    Sys_W = Get_Proportional_Width(Intro_System, Sys_H);
+    Sys_W = Texture_Manager::GetInstance()->Get_Proportional_Width(Intro_System, Sys_H);
     Sys_X = Logo_X;
     Sys_Y = Logo_Y + Logo_Size + (Logo_Size * 0.25f);
 
     // 6. Mission Data
     Data_H = Sys_H;
-    Data_W = Get_Proportional_Width(Intro_Dtat, Data_H);
+    Data_W = Texture_Manager::GetInstance()->Get_Proportional_Width(Intro_Dtat, Data_H);
     Data_X = Logo_X;
     Data_Y = Sys_Y + Sys_H + (Sys_H * 0.5f);
 
     // 7. Mission Ready
     Ready_H = Data_H;
-    Ready_W = Get_Proportional_Width(Intro_Ready, Ready_H);
+    Ready_W = Texture_Manager::GetInstance()->Get_Proportional_Width(Intro_Ready, Ready_H);
     Ready_X = Logo_X;
     Ready_Y = Data_Y + Data_H + (Data_H * 0.5f);
 
     // 8. Operation, Title
     Op_H = Sys_H; 
-    Op_W = Get_Proportional_Width(Intro_Operation, Op_H);
+    Op_W = Texture_Manager::GetInstance()->Get_Proportional_Width(Intro_Operation, Op_H);
     Op_X = Logo_X; 
     Op_Y = Logo_Y;
 
     Nova_H = ScreenH * 0.25f;
-    Nova_W = Get_Proportional_Width(Intro_Nova, Nova_H);
+    Nova_W = Texture_Manager::GetInstance()->Get_Proportional_Width(Intro_Nova, Nova_H);
     Nova_X = ScreenW * 0.1f; 
     Nova_Y = Op_Y + Op_H;
 
@@ -173,6 +171,7 @@ void Title_Reset()
     Is_Intro_SFX_Playing = false;
     Is_Glitch_SFX_Playing = false;
     Is_Flare_SFX_Playing = false;
+	Is_Title_Skip = false;
 
     int Flare_Pattern_ID = SpriteAni_Get_Pattern_Info(Intro_Flare, 20, 5, 0.075, { 200, 200 }, { 0, 0 }, true);
 
@@ -184,15 +183,21 @@ void Title_Reset()
 
 void Title_Update(float elapsed_time)
 {
-    if (KeyLogger_IsPressed(KK_ESCAPE))
+    if (KeyLogger_IsTrigger(KK_ESCAPE) && !Is_Title_Skip)
     {
 		Title_Intro_Skip();
-        return;
     }
 
-    Logo_Update(elapsed_time);
-    Intro_Update(elapsed_time);
-	Glitch_Update(elapsed_time);
+    if (!Is_Title_Skip)
+    {
+        Logo_Update(elapsed_time);
+        Intro_Update(elapsed_time);
+        Glitch_Update(elapsed_time);
+    }
+    else
+    {
+        Glitch_Update(elapsed_time);
+    }
 }
 
 void Title_Draw()
@@ -218,22 +223,6 @@ void Title_Draw()
 }
 
 //---------------Private Logic---------------//
-float Get_Proportional_Width(int Tex_ID, float Target_Height)
-{
-    if (Tex_ID == -1)
-    {
-        Debug::D_Out << "[Intro Texture Function] Missing Texture ID" << std::endl;
-        return 0.0f;
-    }
-
-    float Tex_W = static_cast<float>(Texture_Manager::GetInstance()->Get_Width(Tex_ID));
-    float Tex_H = static_cast<float>(Texture_Manager::GetInstance()->Get_Height(Tex_ID));
-
-    if (Tex_H == 0.0f) return 0.0f;
-
-    return Tex_W * (Target_Height / Tex_H);
-}
-
 void Logo_Update(float dt)
 {
     switch (Current_Logo_State)
@@ -685,6 +674,7 @@ void Flare_Update(float dt)
         {
 			Flare_Timer = 1.5f;
             Current_Flare_State = FLARE_STATE::FLASH_BANG;
+            Fade_Start(0.5f, true, White);
         }
 
         if (Flare_Timer >= 1.0f && !Is_Flare_SFX_Playing)
@@ -704,8 +694,6 @@ void Flare_Update(float dt)
         {
             Flare_Timer = 1.5f;
         }
-
-        Fade_Start(0.5f, true, White);
 
         Debug::D_Out << "[Title] Flare Effect Done" << std::endl;
 		Current_Flare_State = FLARE_STATE::DONE;
@@ -747,11 +735,13 @@ void Title_Intro_Skip()
     Current_Flare_State  = FLARE_STATE::DONE;
     Current_Glitch_State = GLITCH_STATE::WHITE_OUT;
 
-	Flare_Timer = 2.0f;
+    Flare_Timer = 1.8f;
 
     Is_Intro_SFX_Playing  = true;
     Is_Glitch_SFX_Playing = true;
     Is_Flare_SFX_Playing  = true;
+
+    Is_Title_Skip = true;
 }
 
 //----------------Texture List----------------//
@@ -759,8 +749,8 @@ void Title_Texture()
 {
 	//----------------BG Texture----------------//
     Title_BG            = Texture_Manager::GetInstance()->GetID("K");
-    Title_Bracket       = Texture_Manager::GetInstance()->GetID("Title_Bracket");
-    Title_Bracket_RGB   = Texture_Manager::GetInstance()->GetID("Title_Bracket_RGB");
+    Title_Bracket       = Texture_Manager::GetInstance()->GetID("Intro_Bracket");
+    Title_Bracket_RGB   = Texture_Manager::GetInstance()->GetID("Intro_Bracket_RGB");
         
 	//---------------Logo Texture---------------//
     Intro_Logo        = Texture_Manager::GetInstance()->GetID("Intro_Logo");

@@ -54,16 +54,19 @@ void Game_Texture_Load()
 
     //----------------------------------------------<< UI Texture >>----------------------------------------------//
     //---------------------UI : Title Texture---------------------//
-    Texture_M->Load("Title_Bracket", L"Resource/Texture/UI/Intro/Title_Bracket.png");
-    Texture_M->Load("Title_Bracket_RGB", L"Resource/Texture/UI/Intro/Title_Bracket_Alpha.png");
+    Texture_M->Load("Title", L"Resource/Texture/UI/Title_Line.png");
 
-    //---------------------UI : Title Logo Texture---------------------//
+    //---------------------UI : Title Intro BG Texture---------------------//
+    Texture_M->Load("Intro_Bracket", L"Resource/Texture/UI/Intro/Title_Bracket.png");
+    Texture_M->Load("Intro_Bracket_RGB", L"Resource/Texture/UI/Intro/Title_Bracket_Alpha.png");
+
+    //---------------------UI : Title Intro Logo Texture---------------------//
     Texture_M->Load("Intro_Logo", L"Resource/Texture/UI/Intro/Title_Logo.png");
     Texture_M->Load("Intro_Made_By", L"Resource/Texture/UI/Intro/Title_MadeBy.png");
     Texture_M->Load("Intro_Corporation", L"Resource/Texture/UI/Intro/Title_Corporation.png");
     Texture_M->Load("Intro_Name", L"Resource/Texture/UI/Intro/Title_Name.png");
 
-    //---------------------UI : Title Intro Texture---------------------//
+    //---------------------UI : Title Intro Anim Texture---------------------//
     Texture_M->Load("Intro_SystemOS", L"Resource/Texture/UI/Intro/Title_System.png");
     Texture_M->Load("Intro_DtatInit", L"Resource/Texture/UI/Intro/Title_Data.png");
     Texture_M->Load("Intro_Ready", L"Resource/Texture/UI/Intro/Title_Ready.png");
@@ -72,13 +75,26 @@ void Game_Texture_Load()
     Texture_M->Load("Intro_Flare", L"Resource/Texture/UI/Intro/Title_Flare_Anim.png");
     
     //---------------------UI : Main Menu Texture---------------------//
-    Texture_M->Load("Start", L"Resource/Texture/UI/Menu_Start.png");
-    Texture_M->Load("Settings", L"Resource/Texture/UI/Menu_Settings.png");
-    Texture_M->Load("Exit", L"Resource/Texture/UI/Menu_Exit.png");
-    Texture_M->Load("UI_Back", L"Resource/Texture/UI/Menu_Back.png");
+    Texture_M->Load("Start_N", L"Resource/Texture/UI/Menu/Main_Start_Wait.png");
+    Texture_M->Load("Start_G", L"Resource/Texture/UI/Menu/Main_Start_Glow.png");
+    Texture_M->Load("Settings_N", L"Resource/Texture/UI/Menu/Main_Setting_Wait.png");
+    Texture_M->Load("Settings_G", L"Resource/Texture/UI/Menu/Main_Setting_Glow.png");
+    Texture_M->Load("Ranking_N", L"Resource/Texture/UI/Menu/Main_Ranking_Wait.png");
+    Texture_M->Load("Ranking_G", L"Resource/Texture/UI/Menu/Main_Ranking_Glow.png");
+    Texture_M->Load("Exit_N", L"Resource/Texture/UI/Menu/Main_Done_Wait.png");
+    Texture_M->Load("Exit_G", L"Resource/Texture/UI/Menu/Main_Done_Glow.png");
 
+    //---------------------UI : Setting Menu Texture---------------------//
+    Texture_M->Load("Setting_BG", L"Resource/Texture/UI/Setting/Setting_Panel.png");
+
+    //---------------------UI : In Game UI Texture---------------------//
+    Texture_M->Load("In_Game_Score", L"Resource/Texture/UI/In_Game/In_Game_Score.png");
+    Texture_M->Load("In_Game_High_Score", L"Resource/Texture/UI/In_Game/In_Game_High_Score.png");
+    Texture_M->Load("In_Game_Stage", L"Resource/Texture/UI/In_Game/In_Game_Stage.png");
+    Texture_M->Load("In_Game_Destroyed", L"Resource/Texture/UI/In_Game/In_Game_Hit.png");
+    
     //---------------------UI : Mouse UI Texture---------------------//
-    Texture_M->Load("UI_Mouse_Cursor", L"Resource/Texture/UI/Aim.png");
+    Texture_M->Load("UI_Mouse_Cursor", L"Resource/Texture/UI/Mouse_UI.png");
 
     //-------------------------------------------------Others Texture-------------------------------------------------//
     Texture_M->Load("Bismark_LOGO", L"Resource/Texture/Other/Bismark.jpg");

@@ -30,6 +30,8 @@ public:
 	unsigned int Get_Width(int TexI_D);
 	unsigned int Get_Height(int Tex_ID);
 
+	float Get_Proportional_Width(int Tex_ID, float Target_Height);
+
 private:
 	Texture_Manager() = default;
 	~Texture_Manager() = default;
